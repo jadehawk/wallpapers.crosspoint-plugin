@@ -95,6 +95,26 @@ Useful options:
 
 A full build replaces `catalogs/`, regenerates `wallpapers.crosspoint-plugin/device.json`, and writes `catalogs/index.json` with build statistics.
 
+## Thumbnail cache seed
+
+Firmware with plugin-catalog image caching can use a prebuilt thumbnail seed instead of downloading and converting every first-view thumbnail on the device. The seed builder takes up to the first 100 wallpapers from every generated catalog, globally de-duplicates overlapping wallpaper IDs, downloads their thumbnails, and converts them to the same persistent cache filename/layout used by CrossPoint.
+
+The rolling seed is published as a separate **pre-release** so it does not replace the normal semantic-versioned Plugin Hub release:
+
+- ZIP: `https://github.com/jadehawk/wallpapers.crosspoint-plugin/releases/download/cache-seed/wallpaper-cache-seed.zip`
+- build summary: `https://github.com/jadehawk/wallpapers.crosspoint-plugin/releases/download/cache-seed/wallpaper-cache-seed.json`
+
+The ZIP contains a `.cache/` directory. Extract it into the installed Wallpaper Downloader plugin directory so the result is `<plugin>/.cache/`. Existing cached images with matching names can be overwritten safely; images outside the seed continue to fill incrementally as catalogs are browsed.
+
+To build the seed locally, install Pillow and run:
+
+```powershell
+python -m pip install "Pillow>=11,<13"
+python tools/build_cache_seed.py --limit-per-catalog 100
+```
+
+The GitHub Actions workflow runs a lightweight ReadMe.club inventory check every 3 hours. It compares the reported source total/pages and the newest public wallpaper IDs with the committed `catalogs/` snapshot. When that probe detects a change, the existing `tools/build_catalog.py` generator refreshes the same 16-item catalog structure used by v0.1.0, commits only `catalogs/`, and then rebuilds the rolling cache seed. The production `wallpapers.crosspoint-plugin/device.json` is not rewritten by the automated refresh. Manual runs can also force a full catalog rebuild or rebuild only the seed when the source is unchanged.
+
 ## Tests
 
 ```powershell

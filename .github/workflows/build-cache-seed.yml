@@ -1,0 +1,155 @@
+name: Refresh wallpaper catalogs and cache seed
+
+on:
+  schedule:
+    - cron: "17 */3 * * *"
+  workflow_dispatch:
+    inputs:
+      force_catalog_rebuild:
+        description: "Rebuild catalogs even when the lightweight check reports no change"
+        required: false
+        type: boolean
+        default: false
+  push:
+    branches:
+      - main
+    paths:
+      - "catalogs/**"
+      - "tools/build_cache_seed.py"
+      - "tools/check_catalog_updates.py"
+      - ".github/workflows/build-cache-seed.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: wallpaper-catalog-refresh
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    if: github.event_name != 'push' || github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Lightweight source check
+        id: source_check
+        if: github.event_name != 'push'
+        run: python tools/check_catalog_updates.py --github-output "$GITHUB_OUTPUT"
+
+      - name: Decide work for this run
+        id: plan
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          SOURCE_CHANGED: ${{ steps.source_check.outputs.changed }}
+          SOURCE_REASON: ${{ steps.source_check.outputs.reason }}
+          FORCE_REBUILD: ${{ github.event_name == 'workflow_dispatch' && inputs.force_catalog_rebuild || false }}
+        run: |
+          rebuild=false
+          seed=false
+          reason="${SOURCE_REASON:-not checked}"
+
+          if [[ "$EVENT_NAME" == "push" ]]; then
+            seed=true
+            reason="committed catalog/seed tooling changed"
+          elif [[ "$FORCE_REBUILD" == "true" ]]; then
+            rebuild=true
+            seed=true
+            reason="manual forced catalog rebuild"
+          elif [[ "$SOURCE_CHANGED" == "true" ]]; then
+            rebuild=true
+            seed=true
+          elif [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            seed=true
+            reason="manual seed rebuild; source catalogs unchanged"
+          fi
+
+          echo "rebuild_catalogs=$rebuild" >> "$GITHUB_OUTPUT"
+          echo "build_seed=$seed" >> "$GITHUB_OUTPUT"
+          echo "reason=$reason" >> "$GITHUB_OUTPUT"
+
+      - name: Rebuild catalogs
+        if: steps.plan.outputs.rebuild_catalogs == 'true'
+        run: python tools/build_catalog.py --device-json dist/device.generated.json
+
+      - name: Commit refreshed catalogs
+        if: steps.plan.outputs.rebuild_catalogs == 'true'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add catalogs
+          if git diff --cached --quiet; then
+            echo "Catalog generator produced no committed catalog changes."
+          else
+            git commit -m "chore: refresh wallpaper catalogs"
+            git push origin HEAD:main
+          fi
+
+      - name: Install image tooling
+        if: steps.plan.outputs.build_seed == 'true'
+        run: python -m pip install "Pillow>=11,<13"
+
+      - name: Build cache seed
+        if: steps.plan.outputs.build_seed == 'true'
+        run: python tools/build_cache_seed.py --limit-per-catalog 100
+
+      - name: Publish rolling cache-seed release assets
+        if: steps.plan.outputs.build_seed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          if ! gh release view cache-seed >/dev/null 2>&1; then
+            gh release create cache-seed \
+              --prerelease \
+              --title "Wallpaper Cache Seed" \
+              --notes "Rolling thumbnail cache seed for firmware with CrossPoint catalog image caching support. Built from up to the first 100 wallpapers in every generated catalog and globally de-duplicated."
+          fi
+          gh release upload cache-seed \
+            dist/wallpaper-cache-seed.zip \
+            dist/wallpaper-cache-seed.json \
+            --clobber
+
+      - name: Write workflow summary
+        if: always()
+        shell: bash
+        env:
+          PLAN_REASON: ${{ steps.plan.outputs.reason }}
+          REBUILT: ${{ steps.plan.outputs.rebuild_catalogs }}
+          BUILT_SEED: ${{ steps.plan.outputs.build_seed }}
+        run: |
+          {
+            echo "## Wallpaper catalog refresh"
+            echo
+            echo "- Reason: ${PLAN_REASON:-unknown}"
+            echo "- Catalog rebuild: ${REBUILT:-false}"
+            echo "- Cache seed build: ${BUILT_SEED:-false}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [[ -f dist/wallpaper-cache-seed.json ]]; then
+            python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          from pathlib import Path
+          data = json.loads(Path("dist/wallpaper-cache-seed.json").read_text(encoding="utf-8"))
+          zip_bytes = Path("dist/wallpaper-cache-seed.zip").stat().st_size
+          print()
+          print("### Cache seed")
+          print()
+          print(f"- Catalogs: {data['catalog_count']}")
+          print(f"- Unique thumbnails: {data['built_images']}")
+          print(f"- Expanded cache: {data['expanded_cache_bytes'] / (1024 * 1024):.2f} MiB")
+          print(f"- ZIP: {zip_bytes / (1024 * 1024):.2f} MiB")
+          print("- Stable download: https://github.com/jadehawk/wallpapers.crosspoint-plugin/releases/download/cache-seed/wallpaper-cache-seed.zip")
+          PY
+          fi
