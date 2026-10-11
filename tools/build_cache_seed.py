@@ -31,11 +31,16 @@ from typing import Any, Iterable, Mapping, Sequence
 
 from PIL import Image
 
-THUMBNAIL_URL = (
+SOURCE_THUMBNAIL_URL = (
     "https://api.readme.club/storage/v1/object/public/"
     "wallpapers-public/wallpapers/{id}/thumbnail.jpg"
 )
-CACHE_IMAGE_PREFIX = "image-v1|200x300|1|GET|"
+HOSTED_THUMBNAIL_URL = (
+    "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/"
+    "generated-thumbnails/thumbs/{id}.bmp"
+)
+# ImageFormat::Bmp == 0. The cache key must exactly match firmware.
+CACHE_IMAGE_PREFIX = "image-v1|200x300|0|GET|"
 TARGET_WIDTH = 200
 TARGET_HEIGHT = 300
 DEFAULT_PER_CATALOG = 100
@@ -111,7 +116,7 @@ def select_seed_items(catalog_root: Path, per_catalog: int) -> tuple[list[SeedIt
     items = [
         SeedItem(
             wallpaper_id=wallpaper_id,
-            thumbnail_url=THUMBNAIL_URL.format(id=wallpaper_id),
+            thumbnail_url=HOSTED_THUMBNAIL_URL.format(id=wallpaper_id),
             catalogs=tuple(sorted(titles)),
         )
         for wallpaper_id, titles in sorted(memberships.items())
@@ -207,7 +212,7 @@ def build_one(item: SeedItem, cache_dir: Path, *, timeout: float, retries: int) 
     bmp_path = cache_dir / cache_filename(item.thumbnail_url)
     if bmp_path.is_file() and bmp_path.stat().st_size > 62:
         return item.wallpaper_id, bmp_path.stat().st_size
-    data = request_bytes(item.thumbnail_url, timeout=timeout, retries=retries)
+    data = request_bytes(SOURCE_THUMBNAIL_URL.format(id=item.wallpaper_id), timeout=timeout, retries=retries)
     bmp = thumbnail_to_bmp(data)
     bmp_path.write_bytes(bmp)
     return item.wallpaper_id, len(bmp)

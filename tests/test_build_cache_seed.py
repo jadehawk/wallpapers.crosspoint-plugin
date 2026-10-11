@@ -13,8 +13,8 @@ from tools import build_cache_seed as seed
 
 class CacheKeyTests(unittest.TestCase):
     def test_cache_filename_matches_firmware_key_contract(self) -> None:
-        url = "https://api.readme.club/storage/v1/object/public/wallpapers-public/wallpapers/abc/thumbnail.jpg"
-        key = f"image-v1|200x300|1|GET|{url}|"
+        url = seed.HOSTED_THUMBNAIL_URL.format(id="abc")
+        key = f"image-v1|200x300|0|GET|{url}|"
         expected = f"i_{hashlib.md5(key.encode('utf-8')).hexdigest()}.bmp"
         self.assertEqual(seed.cache_filename(url), expected)
 

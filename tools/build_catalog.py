@@ -29,6 +29,10 @@ VERSION = "0.1.0"
 SITE_BASE = "https://www.readme.club"
 GALLERY_URL = f"{SITE_BASE}/wallpapers"
 DOWNLOAD_URL = f"{SITE_BASE}/api/wallpapers/{{id}}/proxy-download?format=original"
+HOSTED_THUMBNAIL_URL = (
+    "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/"
+    "generated-thumbnails/thumbs/{id}.bmp"
+)
 DEFAULT_RAW_BASE = (
     "https://raw.githubusercontent.com/jadehawk/"
     "wallpapers.crosspoint-plugin/main/catalogs"
@@ -268,7 +272,7 @@ def catalog_item(record: Mapping[str, Any]) -> dict[str, Any]:
         "device": str(record.get("target_device") or ""),
         "width": int(record.get("width") or 0),
         "height": int(record.get("height") or 0),
-        "thumbnail": str(record.get("thumbnail_path") or ""),
+        "thumbnail": HOSTED_THUMBNAIL_URL.format(id=wallpaper_id),
         "created_at": str(record.get("created_at") or ""),
         "format": str(record.get("format") or ""),
     }

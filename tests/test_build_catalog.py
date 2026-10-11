@@ -54,7 +54,7 @@ class CatalogItemTests(unittest.TestCase):
             "https://www.readme.club/api/wallpapers/"
             "12345678-1234-1234-1234-123456789abc/proxy-download?format=original",
         )
-        self.assertEqual(item["thumbnail"], SAMPLE_WALLPAPER["thumbnail_path"])
+        self.assertEqual(item["thumbnail"], catalog.HOSTED_THUMBNAIL_URL.format(id=SAMPLE_WALLPAPER["id"]))
 
     def test_sensitive_items_are_not_public_candidates(self) -> None:
         sensitive = dict(SAMPLE_WALLPAPER, is_nsfw=True)

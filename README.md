@@ -95,9 +95,11 @@ Useful options:
 
 A full build replaces `catalogs/`, regenerates `wallpapers.crosspoint-plugin/device.json`, and writes `catalogs/index.json` with build statistics.
 
-## Thumbnail cache seed
+## Hosted thumbnails and cache seed
 
-Firmware with plugin-catalog image caching can use a prebuilt thumbnail seed instead of downloading and converting every first-view thumbnail on the device. The seed builder takes up to the first 100 wallpapers from every generated catalog, globally de-duplicates overlapping wallpaper IDs, downloads their thumbnails, and converts them to the same persistent cache filename/layout used by CrossPoint.
+High-quality 1-bit BMP previews are published on the generated-thumbnails branch under thumbs/<wallpaper-id>.bmp. Catalog browsing can fetch those pre-rendered files directly, avoiding the device-side progressive-JPEG quality limitation while keeping ReadMe.club as the source for the actual wallpaper download.
+
+Firmware with plugin-catalog image caching can also use a prebuilt thumbnail seed instead of fetching every first-view thumbnail individually. The seed builder takes up to the first 100 wallpapers from every generated catalog, globally de-duplicates overlapping wallpaper IDs, downloads their thumbnails, and converts them to the same persistent cache filename/layout used by CrossPoint.
 
 The rolling seed is published as a separate **pre-release** so it does not replace the normal semantic-versioned Plugin Hub release:
 
@@ -113,7 +115,7 @@ python -m pip install "Pillow>=11,<13"
 python tools/build_cache_seed.py --limit-per-catalog 100
 ```
 
-The GitHub Actions workflow runs a lightweight ReadMe.club inventory check every 3 hours. It compares the reported source total/pages and the newest public wallpaper IDs with the committed `catalogs/` snapshot. When that probe detects a change, the existing `tools/build_catalog.py` generator refreshes the same 16-item catalog structure used by v0.1.0, commits only `catalogs/`, and then rebuilds the rolling cache seed. The production `wallpapers.crosspoint-plugin/device.json` is not rewritten by the automated refresh. Manual runs can also force a full catalog rebuild or rebuild only the seed when the source is unchanged.
+The GitHub Actions workflow runs a lightweight ReadMe.club inventory check every 3 hours. It compares the reported source total/pages and the newest public wallpaper IDs with the committed catalogs snapshot. When that probe detects a change, tools/build_catalog.py refreshes the same 16-item catalog structure used by v0.1.0, the workflow incrementally adds any missing BMPs to generated-thumbnails, and then rebuilds the rolling cache seed using cache keys that match those hosted BMP URLs. The production wallpapers.crosspoint-plugin/device.json is not rewritten by the automated refresh. Manual runs can also force a full catalog rebuild or rebuild only the thumbnail/seed assets when the source is unchanged.
 
 ## Tests
 

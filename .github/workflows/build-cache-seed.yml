@@ -16,6 +16,7 @@ on:
     paths:
       - "catalogs/**"
       - "tools/build_cache_seed.py"
+      - "tools/build_hosted_thumbnails.py"
       - "tools/check_catalog_updates.py"
       - ".github/workflows/build-cache-seed.yml"
 
@@ -99,6 +100,36 @@ jobs:
       - name: Install image tooling
         if: steps.plan.outputs.build_seed == 'true'
         run: python -m pip install "Pillow>=11,<13"
+
+      - name: Prepare generated thumbnail branch
+        id: thumbnail_branch
+        if: steps.plan.outputs.build_seed == 'true'
+        shell: bash
+        run: |
+          thumb_worktree="$RUNNER_TEMP/generated-thumbnails"
+          git fetch origin generated-thumbnails:refs/remotes/origin/generated-thumbnails
+          git worktree add -B generated-thumbnails "$thumb_worktree" origin/generated-thumbnails
+          echo "path=$thumb_worktree" >> "$GITHUB_OUTPUT"
+
+      - name: Build hosted thumbnails
+        if: steps.plan.outputs.build_seed == 'true'
+        run: python tools/build_hosted_thumbnails.py --output "${{ steps.thumbnail_branch.outputs.path }}/thumbs"
+
+      - name: Publish generated thumbnails
+        if: steps.plan.outputs.build_seed == 'true'
+        shell: bash
+        env:
+          THUMB_WORKTREE: ${{ steps.thumbnail_branch.outputs.path }}
+        run: |
+          git -C "$THUMB_WORKTREE" config user.name "github-actions[bot]"
+          git -C "$THUMB_WORKTREE" config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C "$THUMB_WORKTREE" add thumbs
+          if git -C "$THUMB_WORKTREE" diff --cached --quiet; then
+            echo "Hosted thumbnails already match the current catalogs."
+          else
+            git -C "$THUMB_WORKTREE" commit -m "chore: refresh generated wallpaper thumbnails"
+            git -C "$THUMB_WORKTREE" push origin HEAD:generated-thumbnails
+          fi
 
       - name: Build cache seed
         if: steps.plan.outputs.build_seed == 'true'
