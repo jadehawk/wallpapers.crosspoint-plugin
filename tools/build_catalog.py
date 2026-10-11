@@ -25,14 +25,15 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
+try:
+    from .hosted_assets import hosted_thumbnail_url, hosted_wallpaper_url
+except ImportError:  # Direct script execution: python tools/build_catalog.py
+    from hosted_assets import hosted_thumbnail_url, hosted_wallpaper_url
+
 VERSION = "0.1.0"
 SITE_BASE = "https://www.readme.club"
 GALLERY_URL = f"{SITE_BASE}/wallpapers"
 DOWNLOAD_URL = f"{SITE_BASE}/api/wallpapers/{{id}}/proxy-download?format=original"
-HOSTED_THUMBNAIL_URL = (
-    "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/"
-    "generated-thumbnails/thumbs/{id}.bmp"
-)
 DEFAULT_RAW_BASE = (
     "https://raw.githubusercontent.com/jadehawk/"
     "wallpapers.crosspoint-plugin/main/catalogs"
@@ -261,20 +262,22 @@ def catalog_item(record: Mapping[str, Any]) -> dict[str, Any]:
     category = category_label(record.get("category"))
     uploader = uploader_name(record)
     downloads = int(record.get("download_count") or 0)
+    source_format = str(record.get("format") or "")
+    download_url = hosted_wallpaper_url(wallpaper_id) if source_format == "needs_conversion" else DOWNLOAD_URL.format(id=wallpaper_id)
     return {
         "id": wallpaper_id,
         "title": title,
         "author": f"{category} · {uploader} · {compact_number(downloads)} downloads",
-        "url": DOWNLOAD_URL.format(id=wallpaper_id),
+        "url": download_url,
         "category": str(record.get("category") or "other"),
         "uploader": uploader,
         "downloads": downloads,
         "device": str(record.get("target_device") or ""),
         "width": int(record.get("width") or 0),
         "height": int(record.get("height") or 0),
-        "thumbnail": HOSTED_THUMBNAIL_URL.format(id=wallpaper_id),
+        "thumbnail": hosted_thumbnail_url(wallpaper_id),
         "created_at": str(record.get("created_at") or ""),
-        "format": str(record.get("format") or ""),
+        "format": source_format,
     }
 
 
@@ -529,9 +532,45 @@ def build_device_memberships(
     return memberships, stats
 
 
+def rewrite_hosted_asset_urls(catalog_root: Path) -> tuple[int, int, int]:
+    """Rewrite existing catalog rows to the hosted-assets sharded URLs."""
+    changed_pages = 0
+    changed_thumbnails = 0
+    changed_wallpapers = 0
+    for path in sorted(catalog_root.rglob("*.json")):
+        if path.name == "index.json":
+            continue
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        page_changed = False
+        for item in payload.get("items", []):
+            wallpaper_id = str(item.get("id") or "").strip()
+            if not wallpaper_id:
+                continue
+            expected_thumbnail = hosted_thumbnail_url(wallpaper_id)
+            if item.get("thumbnail") != expected_thumbnail:
+                item["thumbnail"] = expected_thumbnail
+                changed_thumbnails += 1
+                page_changed = True
+            if str(item.get("format") or "") == "needs_conversion":
+                expected_url = hosted_wallpaper_url(wallpaper_id)
+                if item.get("url") != expected_url:
+                    item["url"] = expected_url
+                    changed_wallpapers += 1
+                    page_changed = True
+        if page_changed:
+            write_json(path, payload)
+            changed_pages += 1
+    return changed_pages, changed_thumbnails, changed_wallpapers
+
+
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=Path("catalogs"), help="generated catalog directory")
+    parser.add_argument(
+        "--rewrite-hosted-urls-only",
+        action="store_true",
+        help="rewrite thumbnail and needs_conversion URLs in the existing catalog tree; no network requests",
+    )
     parser.add_argument(
         "--device-json",
         type=Path,
@@ -565,6 +604,13 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
+    if args.rewrite_hosted_urls_only:
+        changed_pages, changed_thumbnails, changed_wallpapers = rewrite_hosted_asset_urls(args.output)
+        print(
+            f"Done: rewrote {changed_thumbnails} thumbnail URL(s) and {changed_wallpapers} hosted wallpaper URL(s) "
+            f"across {changed_pages} catalog page(s)."
+        )
+        return 0
     if args.workers < 1 or args.retries < 1 or args.random_count < 1:
         raise SystemExit("workers, retries, and random-count must be positive")
 

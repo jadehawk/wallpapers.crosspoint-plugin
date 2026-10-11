@@ -13,7 +13,7 @@ from tools import build_cache_seed as seed
 
 class CacheKeyTests(unittest.TestCase):
     def test_cache_filename_matches_firmware_key_contract(self) -> None:
-        url = seed.HOSTED_THUMBNAIL_URL.format(id="abc")
+        url = seed.hosted_thumbnail_url("abc")
         key = f"image-v1|200x300|0|GET|{url}|"
         expected = f"i_{hashlib.md5(key.encode('utf-8')).hexdigest()}.bmp"
         self.assertEqual(seed.cache_filename(url), expected)
@@ -33,21 +33,21 @@ class SelectionTests(unittest.TestCase):
 
             # Item C is the static-page look-ahead repeated at the start of page 2.
             (root / "latest" / "1.json").write_text(
-                json.dumps({"items": [{"id": "A"}, {"id": "B"}, {"id": "C"}]}), encoding="utf-8"
+                json.dumps({"items": [{"id": "AA"}, {"id": "BB"}, {"id": "CC"}]}), encoding="utf-8"
             )
             (root / "latest" / "2.json").write_text(
-                json.dumps({"items": [{"id": "C"}, {"id": "D"}]}), encoding="utf-8"
+                json.dumps({"items": [{"id": "CC"}, {"id": "DD"}]}), encoding="utf-8"
             )
             # B overlaps Latest; E is unique to this catalog.
             (root / "categories" / "dark" / "1.json").write_text(
-                json.dumps({"items": [{"id": "B"}, {"id": "E"}, {"id": "F"}]}), encoding="utf-8"
+                json.dumps({"items": [{"id": "BB"}, {"id": "EE"}, {"id": "FF"}]}), encoding="utf-8"
             )
 
             items, stats = seed.select_seed_items(root, per_catalog=3)
             by_id = {item.wallpaper_id: item for item in items}
 
-            self.assertEqual(set(by_id), {"A", "B", "C", "E", "F"})
-            self.assertEqual(by_id["B"].catalogs, ("Category · Dark", "Latest"))
+            self.assertEqual(set(by_id), {"AA", "BB", "CC", "EE", "FF"})
+            self.assertEqual(by_id["BB"].catalogs, ("Category · Dark", "Latest"))
             self.assertEqual(stats[0]["selected"], 3)
             self.assertEqual(stats[1]["selected"], 3)
 

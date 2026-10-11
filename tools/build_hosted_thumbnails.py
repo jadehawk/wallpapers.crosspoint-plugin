@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build high-quality 1-bit BMP thumbnails for the generated-thumbnails branch."""
+"""Build high-quality 1-bit BMP thumbnails for the hosted-assets branch."""
 
 from __future__ import annotations
 
@@ -9,7 +9,12 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Sequence
 
-from build_cache_seed import SOURCE_THUMBNAIL_URL, request_bytes, thumbnail_to_bmp
+try:
+    from .build_cache_seed import SOURCE_THUMBNAIL_URL, request_bytes, thumbnail_to_bmp
+    from .hosted_assets import sharded_bmp_path
+except ImportError:  # Direct script execution: python tools/build_hosted_thumbnails.py
+    from build_cache_seed import SOURCE_THUMBNAIL_URL, request_bytes, thumbnail_to_bmp
+    from hosted_assets import sharded_bmp_path
 
 DEFAULT_WORKERS = 16
 DEFAULT_TIMEOUT = 20.0
@@ -39,7 +44,8 @@ def valid_bmp(path: Path) -> bool:
 
 
 def build_one(wallpaper_id: str, output: Path, *, timeout: float, retries: int) -> str:
-    dest = output / f"{wallpaper_id}.bmp"
+    dest = sharded_bmp_path(output, wallpaper_id)
+    dest.parent.mkdir(parents=True, exist_ok=True)
     if valid_bmp(dest):
         return "cached"
     data = request_bytes(SOURCE_THUMBNAIL_URL.format(id=wallpaper_id), timeout=timeout, retries=retries)

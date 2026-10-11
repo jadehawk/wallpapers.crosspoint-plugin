@@ -31,13 +31,14 @@ from typing import Any, Iterable, Mapping, Sequence
 
 from PIL import Image
 
+try:
+    from .hosted_assets import hosted_thumbnail_url
+except ImportError:  # Direct script execution: python tools/build_cache_seed.py
+    from hosted_assets import hosted_thumbnail_url
+
 SOURCE_THUMBNAIL_URL = (
     "https://api.readme.club/storage/v1/object/public/"
     "wallpapers-public/wallpapers/{id}/thumbnail.jpg"
-)
-HOSTED_THUMBNAIL_URL = (
-    "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/"
-    "generated-thumbnails/thumbs/{id}.bmp"
 )
 # ImageFormat::Bmp == 0. The cache key must exactly match firmware.
 CACHE_IMAGE_PREFIX = "image-v1|200x300|0|GET|"
@@ -116,7 +117,7 @@ def select_seed_items(catalog_root: Path, per_catalog: int) -> tuple[list[SeedIt
     items = [
         SeedItem(
             wallpaper_id=wallpaper_id,
-            thumbnail_url=HOSTED_THUMBNAIL_URL.format(id=wallpaper_id),
+            thumbnail_url=hosted_thumbnail_url(wallpaper_id),
             catalogs=tuple(sorted(titles)),
         )
         for wallpaper_id, titles in sorted(memberships.items())

@@ -54,12 +54,48 @@ class CatalogItemTests(unittest.TestCase):
             "https://www.readme.club/api/wallpapers/"
             "12345678-1234-1234-1234-123456789abc/proxy-download?format=original",
         )
-        self.assertEqual(item["thumbnail"], catalog.HOSTED_THUMBNAIL_URL.format(id=SAMPLE_WALLPAPER["id"]))
+        self.assertEqual(item["thumbnail"], catalog.hosted_thumbnail_url(SAMPLE_WALLPAPER["id"]))
+
+    def test_needs_conversion_uses_hosted_wallpaper_bmp(self) -> None:
+        converted = dict(SAMPLE_WALLPAPER, format="needs_conversion")
+        item = catalog.catalog_item(converted)
+        self.assertEqual(item["url"], catalog.hosted_wallpaper_url(SAMPLE_WALLPAPER["id"]))
+        self.assertEqual(item["format"], "needs_conversion")
 
     def test_sensitive_items_are_not_public_candidates(self) -> None:
         sensitive = dict(SAMPLE_WALLPAPER, is_nsfw=True)
         self.assertFalse(catalog.is_public_candidate(sensitive))
         self.assertTrue(catalog.is_public_candidate(SAMPLE_WALLPAPER))
+
+
+class HostedAssetUrlRewriteTests(unittest.TestCase):
+    def test_rewrites_all_thumbnails_and_only_conversion_downloads(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            page = root / "latest" / "1.json"
+            page.parent.mkdir(parents=True)
+            page.write_text(
+                json.dumps(
+                    {
+                        "items": [
+                            {"id": "convert-me", "format": "needs_conversion", "url": "https://old.example/original"},
+                            {"id": "already-ready", "format": "x4_ready", "url": "https://keep.example/original"},
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (root / "index.json").write_text(json.dumps({"catalogs": []}, indent=2), encoding="utf-8")
+
+            changed = catalog.rewrite_hosted_asset_urls(root)
+            payload = json.loads(page.read_text(encoding="utf-8"))
+
+            self.assertEqual(changed, (1, 2, 1))
+            self.assertEqual(payload["items"][0]["url"], catalog.hosted_wallpaper_url("convert-me"))
+            self.assertEqual(payload["items"][1]["url"], "https://keep.example/original")
+            self.assertEqual(payload["items"][0]["thumbnail"], catalog.hosted_thumbnail_url("convert-me"))
+            self.assertEqual(payload["items"][1]["thumbnail"], catalog.hosted_thumbnail_url("already-ready"))
+            self.assertEqual(catalog.rewrite_hosted_asset_urls(root), (0, 0, 0))
 
 
 class PaginationTests(unittest.TestCase):
