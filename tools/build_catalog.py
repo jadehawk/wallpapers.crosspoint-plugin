@@ -414,7 +414,7 @@ def build_device_manifest(raw_base: str, catalog_specs: Sequence[Mapping[str, An
     ]
     catalog_root = raw_base.rstrip("/")
     return {
-        "title": "Wallpaper Downloader",
+        "title": f"Wallpaper Downloader v{VERSION}",
         "description": (
             "Browse ReadMe.club wallpapers on stock CrossPoint and enable enhanced grid, preview, settings, and cache "
             "features on capable firmware."

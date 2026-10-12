@@ -153,6 +153,7 @@ class DeviceManifestTests(unittest.TestCase):
             {"key": "devices/x3", "title": "X3", "records": []},
         ]
         manifest = catalog.build_device_manifest("https://example.test/catalogs", specs)
+        self.assertEqual(manifest["title"], "Wallpaper Downloader v0.1.1")
         self.assertEqual(manifest["browse"]["page_size"], 16)
         self.assertEqual(manifest["browse"]["fields"]["url"], "url")
         self.assertEqual(manifest["browse"]["fields"]["thumbnail"], "thumbnail")
