@@ -146,7 +146,7 @@ class PackTests(unittest.TestCase):
 
 
 class DeviceManifestTests(unittest.TestCase):
-    def test_manifest_uses_static_named_lists_and_tracked_download_url_field(self) -> None:
+    def test_manifest_keeps_static_lists_and_advertises_dynamic_enhancements(self) -> None:
         specs = [
             {"key": "random", "title": "Random Mix", "records": []},
             {"key": "latest", "title": "Latest", "records": []},
@@ -155,9 +155,14 @@ class DeviceManifestTests(unittest.TestCase):
         manifest = catalog.build_device_manifest("https://example.test/catalogs", specs)
         self.assertEqual(manifest["browse"]["page_size"], 16)
         self.assertEqual(manifest["browse"]["fields"]["url"], "url")
+        self.assertEqual(manifest["browse"]["fields"]["thumbnail"], "thumbnail")
+        self.assertEqual(manifest["browse"]["lists_url"], "https://example.test/catalogs/index.json")
+        self.assertEqual(manifest["browse"]["view"], "{cfg.layout}")
+        self.assertEqual(manifest["cache"]["refresh"], "{cfg.cache_refresh}")
         self.assertEqual(manifest["download"]["url"], "{url}")
+        self.assertEqual(manifest["download"]["preview_on_select"], "{cfg.allow_image_preview}")
         self.assertEqual(manifest["download"]["dest_dir"], "/.sleep")
-        self.assertEqual(manifest["version"], "0.1.0")
+        self.assertEqual(manifest["version"], "0.1.1")
         self.assertEqual(len(manifest["browse"]["lists"]), 3)
         self.assertEqual(
             manifest["browse"]["lists"][0]["url"],

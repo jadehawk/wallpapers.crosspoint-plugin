@@ -2,9 +2,11 @@
 
 CrossPoint plugin for browsing ReadMe.club wallpapers directly on the reader.
 
+The same plugin works in two modes: baseline CrossPoint firmware uses the embedded catalog picker and standard list UI, while capability-aware firmware automatically uses the live dynamic catalog index plus grid/list thumbnails, preview, settings, and cache features.
+
 ## Version
 
-0.1.0
+0.1.1
 
 ## What it does
 

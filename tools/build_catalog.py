@@ -30,7 +30,7 @@ try:
 except ImportError:  # Direct script execution: python tools/build_catalog.py
     from hosted_assets import hosted_thumbnail_url, hosted_wallpaper_url
 
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 SITE_BASE = "https://www.readme.club"
 GALLERY_URL = f"{SITE_BASE}/wallpapers"
 DOWNLOAD_URL = f"{SITE_BASE}/api/wallpapers/{{id}}/proxy-download?format=original"
@@ -412,9 +412,105 @@ def build_device_manifest(raw_base: str, catalog_specs: Sequence[Mapping[str, An
         {"title": str(spec["title"]), "url": raw_catalog_url(raw_base, str(spec["key"]))}
         for spec in catalog_specs
     ]
+    catalog_root = raw_base.rstrip("/")
     return {
         "title": "Wallpaper Downloader",
-        "description": "Browse ReadMe.club wallpapers and download them into /.sleep.",
+        "description": (
+            "Browse ReadMe.club wallpapers on stock CrossPoint and enable enhanced grid, preview, settings, and cache "
+            "features on capable firmware."
+        ),
+        "config": {"file": "settings.json"},
+        "ui": {
+            "default_tab": "browse",
+            "tabs": [
+                {"id": "browse", "title": "Wallpapers", "type": "browse"},
+                {"id": "settings", "title": "Settings", "type": "settings"},
+            ],
+        },
+        "settings": [
+            {
+                "key": "layout",
+                "title": "Layout",
+                "type": "choice",
+                "default": "grid",
+                "options": [
+                    {"title": "Grid", "value": "grid"},
+                    {"title": "List", "value": "list"},
+                ],
+            },
+            {
+                "key": "grid_columns",
+                "title": "Grid columns",
+                "type": "choice",
+                "default": "2",
+                "options": [
+                    {"title": "1 column", "value": "1"},
+                    {"title": "2 columns", "value": "2"},
+                    {"title": "3 columns", "value": "3"},
+                    {"title": "4 columns", "value": "4"},
+                ],
+            },
+            {
+                "key": "grid_rows",
+                "title": "Grid rows",
+                "type": "choice",
+                "default": "2",
+                "options": [
+                    {"title": "1 row", "value": "1"},
+                    {"title": "2 rows", "value": "2"},
+                    {"title": "3 rows", "value": "3"},
+                ],
+            },
+            {
+                "key": "list_thumbnails",
+                "title": "Show thumbnails in list view",
+                "type": "toggle",
+                "default": True,
+            },
+            {
+                "key": "allow_image_preview",
+                "title": "Allow Image Preview",
+                "type": "toggle",
+                "default": True,
+            },
+            {
+                "key": "selection_style",
+                "title": "Row highlight",
+                "type": "choice",
+                "default": "light",
+                "options": [
+                    {"title": "Light", "value": "light"},
+                    {"title": "Theme", "value": "theme"},
+                    {"title": "Outline", "value": "outline"},
+                    {"title": "Dark", "value": "dark"},
+                ],
+            },
+            {
+                "key": "cache_refresh",
+                "title": "Refresh cache",
+                "type": "choice",
+                "default": "7d",
+                "options": [
+                    {"title": "Always", "value": "always"},
+                    {"title": "3 days", "value": "3d"},
+                    {"title": "7 days", "value": "7d"},
+                    {"title": "14 days", "value": "14d"},
+                ],
+            },
+            {
+                "key": "cache_limit_mb",
+                "title": "Cache storage",
+                "type": "choice",
+                "default": "32",
+                "options": [
+                    {"title": "8 MB", "value": "8"},
+                    {"title": "16 MB", "value": "16"},
+                    {"title": "32 MB", "value": "32"},
+                    {"title": "64 MB", "value": "64"},
+                    {"title": "128 MB", "value": "128"},
+                ],
+            },
+        ],
         "browse": {
             "format": "json",
             "url": raw_catalog_url(raw_base, "latest"),
@@ -426,18 +522,46 @@ def build_device_manifest(raw_base: str, catalog_specs: Sequence[Mapping[str, An
                 "author": "author",
                 "id": "id",
                 "url": "url",
+                "thumbnail": "thumbnail",
             },
+            "lists_url": f"{catalog_root}/index.json",
+            "view": "{cfg.layout}",
+            "grid_columns": "{cfg.grid_columns}",
+            "grid_rows": "{cfg.grid_rows}",
+            "grid_page_size": "16",
+            "list_page_size": "16",
+            "list_thumbnail": "{cfg.list_thumbnails}",
+            "selection_style": "{cfg.selection_style}",
+            "image": {
+                "url": "{thumbnail}",
+                "method": "GET",
+                "format": "bmp",
+                "radius": 6,
+            },
+            # Stock CrossPoint uses this release-time snapshot. Capability-aware
+            # firmware prefers lists_url and keeps these entries as offline/fetch fallback.
             "lists": lists,
+        },
+        "cache": {
+            "enabled": True,
+            "refresh": "{cfg.cache_refresh}",
+            "limit_mb": "{cfg.cache_limit_mb}",
+            "seed": {
+                "url": (
+                    "https://github.com/jadehawk/wallpapers.crosspoint-plugin/releases/download/"
+                    "cache-seed/wallpaper-cache-seed.zip"
+                )
+            },
         },
         "download": {
             "url": "{url}",
             "dest_dir": "/.sleep",
             "filename": "{id}.bmp",
+            "preview_on_select": "{cfg.allow_image_preview}",
         },
         "author": "jadehawk",
         "version": VERSION,
     }
-
 
 def build_catalog_specs(
     safe_records: Sequence[Mapping[str, Any]],
@@ -675,7 +799,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"  {spec['title']}: {len(records)} items / {pages} pages", flush=True)
 
     manifest = build_device_manifest(args.raw_base, specs)
-    write_json(args.device_json, manifest, pretty=True)
+    # Keep the dual-mode manifest compact so static fallback lists have room to grow under the 8 KiB firmware limit.
+    write_json(args.device_json, manifest)
     manifest_bytes = args.device_json.stat().st_size
     if manifest_bytes > 8192:
         raise RuntimeError(f"generated device.json is {manifest_bytes} bytes; CrossPoint limit is 8192")

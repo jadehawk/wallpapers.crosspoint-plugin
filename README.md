@@ -2,7 +2,14 @@
 
 CrossPoint wallpaper catalog plugin backed by the public ReadMe.club wallpaper gallery.
 
-Version **0.1.0** provides a native, text-only CrossPoint catalog plus a dependency-free Python generator that turns the live ReadMe.club gallery into small static JSON pages.
+Version **0.1.1** uses one plugin package for both baseline and enhanced CrossPoint firmware. Stock firmware uses an embedded catalog snapshot and the normal native list UI; capability-aware firmware prefers the live catalog index and enables thumbnails, grid/list layouts, preview, settings, and progressive caching.
+
+## Dual-mode compatibility
+
+- **Baseline CrossPoint plugin firmware:** uses the embedded `browse.lists` snapshot. Catalog contents remain live, but newly added catalog categories require a plugin update before they appear in the picker.
+- **Capability-aware firmware:** prefers `browse.lists_url`, so new, renamed, or removed catalog categories appear from the live `catalogs/index.json` without a plugin release.
+- The embedded lists remain a fallback if the live catalog index cannot be fetched.
+- Both embedded and dynamic catalog indexes are produced from the same generator inputs so they do not need separate manual maintenance.
 
 ## Repository layout
 
@@ -46,14 +53,14 @@ Device catalogs use ReadMe.club's public `fits` filters. The X4 family list curr
 
 ## Native catalog rows
 
-CrossPoint's native generic catalog browser is text-only. Each generated item therefore maps:
+Baseline CrossPoint's native generic catalog browser renders these as text rows. Enhanced firmware can use the same item metadata for thumbnails and grid/list layouts. Each generated item maps:
 
 - `title` → wallpaper title
 - `author` → synthesized `Category · uploader · downloads`
 - `id` → ReadMe.club wallpaper UUID
 - `url` → ReadMe.club tracked original-download endpoint
 
-Additional metadata such as thumbnail URL, dimensions, source device, upload time, category, and source format is kept in each generated record for future WebUI use.
+Additional metadata such as thumbnail URL, dimensions, source device, upload time, category, and source format is retained in every generated record. Capability-aware firmware uses the thumbnail metadata directly for the enhanced on-device UI.
 
 ## Pagination
 
@@ -115,7 +122,7 @@ python -m pip install "Pillow>=11,<13"
 python tools/build_cache_seed.py --limit-per-catalog 100
 ```
 
-The GitHub Actions workflow runs a lightweight ReadMe.club inventory check every 3 hours. It compares the reported source total/pages and the newest public wallpaper IDs with the committed catalogs snapshot. When that probe detects a change, `tools/build_catalog.py` refreshes the same 16-item catalog structure used by v0.1.0, the workflow incrementally adds any missing sharded thumbnail and converted-wallpaper BMPs to `hosted-assets`, and then rebuilds the rolling cache seed using cache keys that match those hosted thumbnail URLs. The production `wallpapers.crosspoint-plugin/device.json` is not rewritten by the automated refresh. Manual runs can also force a full catalog rebuild or rebuild only the hosted assets/cache seed when the source is unchanged.
+The GitHub Actions workflow runs a lightweight ReadMe.club inventory check every 3 hours. It compares the reported source total/pages and the newest public wallpaper IDs with the committed catalogs snapshot. When that probe detects a change, the catalogs and live `catalogs/index.json` are refreshed, missing hosted thumbnail/converted-wallpaper BMPs are added, and the rolling cache seed is rebuilt. Enhanced firmware sees catalog-navigation changes from the live index immediately. The production `wallpapers.crosspoint-plugin/device.json` is intentionally not rewritten by the automated refresh: its embedded `browse.lists` snapshot changes only with a plugin release, preserving baseline compatibility. A manual catalog build regenerates that static snapshot from the same catalog specs when preparing a new release.
 
 ## Tests
 
