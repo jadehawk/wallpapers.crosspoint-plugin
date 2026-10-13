@@ -30,7 +30,7 @@ try:
 except ImportError:  # Direct script execution: python tools/build_catalog.py
     from hosted_assets import hosted_thumbnail_url, hosted_wallpaper_url
 
-VERSION = "0.1.1"
+VERSION = "0.1.2"
 SITE_BASE = "https://www.readme.club"
 GALLERY_URL = f"{SITE_BASE}/wallpapers"
 DOWNLOAD_URL = f"{SITE_BASE}/api/wallpapers/{{id}}/proxy-download?format=original"
@@ -474,6 +474,13 @@ def build_device_manifest(raw_base: str, catalog_specs: Sequence[Mapping[str, An
                 "default": True,
             },
             {
+                "key": "hide_pagination",
+                "title": "Hide pagination buttons",
+                "type": "toggle",
+                "default": False,
+                "visible_if": {"device_capability": "touch"},
+            },
+            {
                 "key": "selection_style",
                 "title": "Row highlight",
                 "type": "choice",
@@ -531,6 +538,7 @@ def build_device_manifest(raw_base: str, catalog_specs: Sequence[Mapping[str, An
             "grid_page_size": "16",
             "list_page_size": "16",
             "list_thumbnail": "{cfg.list_thumbnails}",
+            "hide_pagination": "{cfg.hide_pagination}",
             "selection_style": "{cfg.selection_style}",
             "image": {
                 "url": "{thumbnail}",

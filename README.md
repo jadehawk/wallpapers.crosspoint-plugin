@@ -2,7 +2,7 @@
 
 CrossPoint wallpaper catalog plugin backed by the public ReadMe.club wallpaper gallery.
 
-Version **0.1.1** uses one plugin package for both baseline and enhanced CrossPoint firmware. Stock firmware uses an embedded catalog snapshot and the normal native list UI; capability-aware firmware prefers the live catalog index and enables thumbnails, grid/list layouts, preview, settings, and progressive caching.
+Version **0.1.2** uses one plugin package for both baseline and enhanced CrossPoint firmware. Stock firmware uses an embedded catalog snapshot and the normal native list UI; capability-aware firmware prefers the live catalog index and enables thumbnails, grid/list layouts, preview, settings, and progressive caching.
 
 ## Dual-mode compatibility
 

@@ -153,17 +153,20 @@ class DeviceManifestTests(unittest.TestCase):
             {"key": "devices/x3", "title": "X3", "records": []},
         ]
         manifest = catalog.build_device_manifest("https://example.test/catalogs", specs)
-        self.assertEqual(manifest["title"], "Wallpaper Downloader v0.1.1")
+        self.assertEqual(manifest["title"], "Wallpaper Downloader v0.1.2")
         self.assertEqual(manifest["browse"]["page_size"], 16)
         self.assertEqual(manifest["browse"]["fields"]["url"], "url")
         self.assertEqual(manifest["browse"]["fields"]["thumbnail"], "thumbnail")
         self.assertEqual(manifest["browse"]["lists_url"], "https://example.test/catalogs/index.json")
         self.assertEqual(manifest["browse"]["view"], "{cfg.layout}")
+        self.assertEqual(manifest["browse"]["hide_pagination"], "{cfg.hide_pagination}")
+        hide_pagination = next(setting for setting in manifest["settings"] if setting["key"] == "hide_pagination")
+        self.assertEqual(hide_pagination["visible_if"], {"device_capability": "touch"})
         self.assertEqual(manifest["cache"]["refresh"], "{cfg.cache_refresh}")
         self.assertEqual(manifest["download"]["url"], "{url}")
         self.assertEqual(manifest["download"]["preview_on_select"], "{cfg.allow_image_preview}")
         self.assertEqual(manifest["download"]["dest_dir"], "/.sleep")
-        self.assertEqual(manifest["version"], "0.1.1")
+        self.assertEqual(manifest["version"], "0.1.2")
         self.assertEqual(len(manifest["browse"]["lists"]), 3)
         self.assertEqual(
             manifest["browse"]["lists"][0]["url"],

@@ -6,7 +6,7 @@ The same plugin works in two modes: baseline CrossPoint firmware uses the embedd
 
 ## Version
 
-0.1.1
+0.1.2
 
 ## What it does
 
