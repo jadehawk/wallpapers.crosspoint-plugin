@@ -6,10 +6,24 @@ Version **0.1.2** uses one plugin package for both baseline and enhanced CrossPo
 
 ## Dual-mode compatibility
 
-- **Baseline CrossPoint plugin firmware:** uses the embedded `browse.lists` snapshot. Catalog contents remain live, but newly added catalog categories require a plugin update before they appear in the picker.
-- **Capability-aware firmware:** prefers `browse.lists_url`, so new, renamed, or removed catalog categories appear from the live `catalogs/index.json` without a plugin release.
+- **Baseline plugin firmware:** uses the embedded `browse.lists` snapshot and standard native list UI. Users can browse the release-time catalog picker, page through wallpapers, and download selected images directly into `/.sleep`.
+- **Capability-aware/enhanced firmware:** the same package prefers the live `browse.lists_url` index and automatically enables thumbnail-backed grid/list layouts, configurable grid dimensions and row highlighting, image preview, SAVED indicators, plugin settings, and progressive image caching.
+- **Touch-capable enhanced devices:** expose the touch-only **Hide pagination buttons** setting. When pagination is hidden, swipe **up** moves to the next visible batch and swipe **down** moves to the previous visible batch; crossing a catalog-page boundary advances to Next or Previous. Touch preview provides on-screen Close/Save controls, while physical-button behavior remains unchanged.
+- Enhanced-only fields are declarative capabilities. Firmware that does not support them ignores them and continues using the baseline behavior from the same plugin package.
 - The embedded lists remain a fallback if the live catalog index cannot be fetched.
 - Both embedded and dynamic catalog indexes are produced from the same generator inputs so they do not need separate manual maintenance.
+
+## Install with Plugin Hub
+
+Plugin Hub is the preferred installation and update path.
+
+1. Enable the device plugin system if it is not already enabled.
+2. Open **Plugins** and launch **Plugin Hub**.
+3. Open the Community catalog and refresh it if needed.
+4. Find **Wallpaper Downloader v0.1.2** and choose **Install** or **Update**.
+5. Open Wallpaper Downloader from the device Plugins UI after installation.
+
+Plugin Hub discovers the published plugin release and handles the installable payload. The versioned GitHub release ZIP remains available as a manual fallback.
 
 ## Repository layout
 

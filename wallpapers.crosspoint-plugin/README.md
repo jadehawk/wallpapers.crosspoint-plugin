@@ -2,15 +2,32 @@
 
 CrossPoint plugin for browsing ReadMe.club wallpapers directly on the reader.
 
-The same plugin works in two modes: baseline CrossPoint firmware uses the embedded catalog picker and standard list UI, while capability-aware firmware automatically uses the live dynamic catalog index plus grid/list thumbnails, preview, settings, and cache features.
-
 ## Version
 
 0.1.2
 
+## Install with Plugin Hub
+
+Plugin Hub is the preferred installation and update path.
+
+1. Enable the device plugin system if it is not already enabled.
+2. Open **Plugins** and launch **Plugin Hub**.
+3. Open the Community catalog and refresh it if needed.
+4. Find **Wallpaper Downloader v0.1.2** and choose **Install** or **Update**.
+5. Open Wallpaper Downloader from the device Plugins UI after installation.
+
+The same Plugin Hub package works on both baseline and capability-aware firmware; there is no separate enhanced plugin build.
+
+## Dual-mode compatibility
+
+- **Baseline plugin firmware:** uses the embedded catalog picker and standard native list UI. Browse the release-time catalog lists, page through wallpapers, and download selected images directly into `/.sleep`.
+- **Capability-aware/enhanced firmware:** the same package automatically uses the live dynamic catalog index and enables thumbnail-backed grid/list layouts, configurable grid dimensions and row highlighting, image preview, SAVED indicators, plugin settings, and progressive image caching.
+- **Touch-capable enhanced devices:** expose the touch-only **Hide pagination buttons** setting. With pagination hidden, swipe **up** moves to the next visible batch and swipe **down** moves to the previous visible batch; crossing a catalog-page boundary advances to Next or Previous. Touch preview provides on-screen Close/Save controls, while physical-button behavior is unchanged.
+- Enhanced-only fields are declarative capabilities. Firmware that does not support them ignores them and continues using the baseline behavior from the same package.
+
 ## What it does
 
-The native CrossPoint catalog browser exposes generated ReadMe.club collections including:
+The native catalog exposes generated ReadMe.club collections including:
 
 - Random Mix
 - Latest
@@ -23,15 +40,11 @@ The native CrossPoint catalog browser exposes generated ReadMe.club collections 
 - Custom, Dark, Light, Minimalist, Other, and Pop Culture categories
 - Recent monthly curated packs
 
-Each native row shows the wallpaper title plus its category, uploader, and download count. Selecting an entry downloads the wallpaper through ReadMe.club's tracked download endpoint into `/.sleep` on the SD card.
-
-The generated catalog also keeps useful metadata such as thumbnail URL, source device, dimensions, creation time, and source format so a richer WebUI can be added later without changing the catalog source.
+Each catalog item retains the wallpaper title, category, uploader, download count, source-device metadata, dimensions, thumbnail URL, source format, and tracked download URL. Selecting an entry downloads the wallpaper into `/.sleep` on the SD card.
 
 ## Device compatibility
 
-Device lists follow ReadMe.club's own `fits` filters instead of trying to infer compatibility from dimensions.
-
-ReadMe.club does not currently expose a separate X4C compatibility filter, so the **X4 / X4 Pro / X4C** list uses the X4-family compatibility results for now.
+Device lists follow ReadMe.club's own `fits` filters instead of inferring compatibility from dimensions. ReadMe.club does not currently expose a separate X4C compatibility filter, so the **X4 / X4 Pro / X4C** list uses the X4-family compatibility results.
 
 ## Sleep-screen setup
 
@@ -39,4 +52,4 @@ Set CrossPoint's sleep-screen mode to **Custom**. Downloaded wallpapers are stor
 
 ## Catalog source
 
-Wallpaper metadata and downloads come from ReadMe.club. The repository's catalog generator periodically converts the public gallery metadata into small paged JSON files for CrossPoint's native catalog browser.
+Wallpaper metadata and downloads come from ReadMe.club. The repository generator periodically converts the public gallery metadata into small paged JSON files. Baseline firmware uses the embedded release-time catalog index, while capability-aware firmware can consume the live index so category changes can appear without a plugin release.
