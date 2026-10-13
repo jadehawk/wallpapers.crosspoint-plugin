@@ -1,20 +1,20 @@
 {
   "schema": 1,
   "generator_version": "0.1.1",
-  "generated_at": "2026-10-12T17:17:43.653792+00:00",
+  "generated_at": "2026-10-13T00:51:51.747034+00:00",
   "source": "https://www.readme.club/wallpapers",
   "partial": false,
   "page_size": 16,
-  "random_seed": "2026-10-12",
+  "random_seed": "2026-10-13",
   "inventory": {
-    "reported_total": 5307,
+    "reported_total": 5308,
     "reported_pages": 166,
     "fetched_pages": 166,
-    "fetched_unique": 5307
+    "fetched_unique": 5308
   },
-  "unique_records_after_device_crawls": 5307,
+  "unique_records_after_device_crawls": 5308,
   "public_candidates": 5297,
-  "excluded_sensitive": 10,
+  "excluded_sensitive": 11,
   "device_memberships": {
     "devices/x3": {
       "filters": {
@@ -30,16 +30,16 @@
     "devices/x4-family": {
       "filters": {
         "x4": {
-          "reported_total": 4289,
+          "reported_total": 4290,
           "reported_pages": 135,
           "fetched_pages": 135,
-          "fetched_unique": 4289
+          "fetched_unique": 4290
         },
         "x4pro": {
-          "reported_total": 4289,
+          "reported_total": 4290,
           "reported_pages": 135,
           "fetched_pages": 135,
-          "fetched_unique": 4289
+          "fetched_unique": 4290
         }
       },
       "unique": 4286
@@ -47,10 +47,10 @@
     "devices/picco": {
       "filters": {
         "boox-picco": {
-          "reported_total": 4416,
-          "reported_pages": 138,
-          "fetched_pages": 138,
-          "fetched_unique": 4416
+          "reported_total": 4417,
+          "reported_pages": 139,
+          "fetched_pages": 139,
+          "fetched_unique": 4417
         }
       },
       "unique": 4412
@@ -58,10 +58,10 @@
     "devices/sticky": {
       "filters": {
         "seeedstudio-sticky": {
-          "reported_total": 4416,
-          "reported_pages": 138,
-          "fetched_pages": 138,
-          "fetched_unique": 4416
+          "reported_total": 4417,
+          "reported_pages": 139,
+          "fetched_pages": 139,
+          "fetched_unique": 4417
         }
       },
       "unique": 4412
