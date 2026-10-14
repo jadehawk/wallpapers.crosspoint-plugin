@@ -8,6 +8,7 @@
   "files": [
     "manifest.json",
     "device.json",
-    "README.md"
+    "README.md",
+    "DETAILS.md"
   ]
 }
