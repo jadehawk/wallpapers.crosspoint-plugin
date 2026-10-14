@@ -153,7 +153,7 @@ class DeviceManifestTests(unittest.TestCase):
             {"key": "devices/x3", "title": "X3", "records": []},
         ]
         manifest = catalog.build_device_manifest("https://example.test/catalogs", specs)
-        self.assertEqual(manifest["title"], "Wallpaper Downloader v0.1.2")
+        self.assertEqual(manifest["title"], "Wallpaper Downloader v0.1.3")
         self.assertEqual(manifest["browse"]["page_size"], 16)
         self.assertEqual(manifest["browse"]["fields"]["url"], "url")
         self.assertEqual(manifest["browse"]["fields"]["thumbnail"], "thumbnail")
@@ -166,7 +166,7 @@ class DeviceManifestTests(unittest.TestCase):
         self.assertEqual(manifest["download"]["url"], "{url}")
         self.assertEqual(manifest["download"]["preview_on_select"], "{cfg.allow_image_preview}")
         self.assertEqual(manifest["download"]["dest_dir"], "/.sleep")
-        self.assertEqual(manifest["version"], "0.1.2")
+        self.assertEqual(manifest["version"], "0.1.3")
         self.assertEqual(len(manifest["browse"]["lists"]), 3)
         self.assertEqual(
             manifest["browse"]["lists"][0]["url"],

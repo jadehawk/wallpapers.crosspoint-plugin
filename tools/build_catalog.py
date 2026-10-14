@@ -30,7 +30,7 @@ try:
 except ImportError:  # Direct script execution: python tools/build_catalog.py
     from hosted_assets import hosted_thumbnail_url, hosted_wallpaper_url
 
-VERSION = "0.1.2"
+VERSION = "0.1.3"
 SITE_BASE = "https://www.readme.club"
 GALLERY_URL = f"{SITE_BASE}/wallpapers"
 DOWNLOAD_URL = f"{SITE_BASE}/api/wallpapers/{{id}}/proxy-download?format=original"

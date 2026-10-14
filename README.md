@@ -2,7 +2,7 @@
 
 CrossPoint wallpaper catalog plugin backed by the public ReadMe.club wallpaper gallery.
 
-Version **0.1.2** uses one plugin package for both baseline and enhanced CrossPoint firmware. Stock firmware uses an embedded catalog snapshot and the normal native list UI; capability-aware firmware prefers the live catalog index and enables thumbnails, grid/list layouts, preview, settings, and progressive caching.
+Version **0.1.3** uses one plugin package for both baseline and enhanced CrossPoint firmware. Stock firmware uses an embedded catalog snapshot and the normal native list UI; capability-aware firmware prefers the live catalog index and enables thumbnails, grid/list layouts, preview, settings, and progressive caching.
 
 ## Dual-mode compatibility
 
@@ -20,7 +20,7 @@ Plugin Hub is the preferred installation and update path.
 1. Enable the device plugin system if it is not already enabled.
 2. Open **Plugins** and launch **Plugin Hub**.
 3. Open the Community catalog and refresh it if needed.
-4. Find **Wallpaper Downloader v0.1.2** and choose **Install** or **Update**.
+4. Find **Wallpaper Downloader v0.1.3** and choose **Install** or **Update**.
 5. Open Wallpaper Downloader from the device Plugins UI after installation.
 
 Plugin Hub discovers the published plugin release and handles the installable payload. The versioned GitHub release ZIP remains available as a manual fallback.

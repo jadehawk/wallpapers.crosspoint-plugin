@@ -4,7 +4,7 @@ CrossPoint plugin for browsing ReadMe.club wallpapers directly on the reader.
 
 ## Version
 
-0.1.2
+0.1.3
 
 ## Install with Plugin Hub
 
@@ -13,7 +13,7 @@ Plugin Hub is the preferred installation and update path.
 1. Enable the device plugin system if it is not already enabled.
 2. Open **Plugins** and launch **Plugin Hub**.
 3. Open the Community catalog and refresh it if needed.
-4. Find **Wallpaper Downloader v0.1.2** and choose **Install** or **Update**.
+4. Find **Wallpaper Downloader v0.1.3** and choose **Install** or **Update**.
 5. Open Wallpaper Downloader from the device Plugins UI after installation.
 
 The same Plugin Hub package works on both baseline and capability-aware firmware; there is no separate enhanced plugin build.
