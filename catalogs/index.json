@@ -1,19 +1,19 @@
 {
   "schema": 1,
   "generator_version": "0.1.3",
-  "generated_at": "2026-10-16T16:48:45.479273+00:00",
+  "generated_at": "2026-10-16T21:23:28.388301+00:00",
   "source": "https://www.readme.club/wallpapers",
   "partial": false,
   "page_size": 16,
   "random_seed": "2026-10-16",
   "inventory": {
-    "reported_total": 5807,
+    "reported_total": 5809,
     "reported_pages": 182,
     "fetched_pages": 182,
-    "fetched_unique": 5807
+    "fetched_unique": 5809
   },
-  "unique_records_after_device_crawls": 5807,
-  "public_candidates": 5792,
+  "unique_records_after_device_crawls": 5809,
+  "public_candidates": 5794,
   "excluded_sensitive": 15,
   "device_memberships": {
     "devices/x3": {
@@ -30,41 +30,41 @@
     "devices/x4-family": {
       "filters": {
         "x4": {
-          "reported_total": 4723,
+          "reported_total": 4725,
           "reported_pages": 148,
           "fetched_pages": 148,
-          "fetched_unique": 4723
+          "fetched_unique": 4725
         },
         "x4pro": {
-          "reported_total": 4723,
+          "reported_total": 4725,
           "reported_pages": 148,
           "fetched_pages": 148,
-          "fetched_unique": 4723
+          "fetched_unique": 4725
         }
       },
-      "unique": 4717
+      "unique": 4719
     },
     "devices/picco": {
       "filters": {
         "boox-picco": {
-          "reported_total": 4861,
+          "reported_total": 4863,
           "reported_pages": 152,
           "fetched_pages": 152,
-          "fetched_unique": 4861
+          "fetched_unique": 4863
         }
       },
-      "unique": 4854
+      "unique": 4856
     },
     "devices/sticky": {
       "filters": {
         "seeedstudio-sticky": {
-          "reported_total": 4861,
+          "reported_total": 4863,
           "reported_pages": 152,
           "fetched_pages": 152,
-          "fetched_unique": 4861
+          "fetched_unique": 4863
         }
       },
-      "unique": 4854
+      "unique": 4856
     },
     "devices/paper-pro-move": {
       "filters": {
@@ -89,15 +89,15 @@
     {
       "key": "latest",
       "title": "Latest",
-      "items": 5792,
-      "pages": 362,
+      "items": 5794,
+      "pages": 363,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/latest/{page}.json"
     },
     {
       "key": "popular",
       "title": "Popular",
-      "items": 5792,
-      "pages": 362,
+      "items": 5794,
+      "pages": 363,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/popular/{page}.json"
     },
     {
@@ -110,21 +110,21 @@
     {
       "key": "devices/x4-family",
       "title": "X4 / X4 Pro / X4C",
-      "items": 4717,
+      "items": 4719,
       "pages": 295,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/devices/x4-family/{page}.json"
     },
     {
       "key": "devices/picco",
       "title": "Picco",
-      "items": 4854,
+      "items": 4856,
       "pages": 304,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/devices/picco/{page}.json"
     },
     {
       "key": "devices/sticky",
       "title": "Seeed reTerminal Sticky",
-      "items": 4854,
+      "items": 4856,
       "pages": 304,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/devices/sticky/{page}.json"
     },
@@ -152,7 +152,7 @@
     {
       "key": "categories/light",
       "title": "Category · Light",
-      "items": 380,
+      "items": 382,
       "pages": 24,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/categories/light/{page}.json"
     },
