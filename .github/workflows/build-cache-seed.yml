@@ -145,6 +145,26 @@ jobs:
           python tools/build_cache_seed.py --limit-per-catalog 250 --source-cache dist/cache-seed-large/.cache --output dist/cache-seed-medium --zip dist/wallpaper-cache-seed-medium.zip --summary dist/wallpaper-cache-seed-medium.json
           python tools/build_cache_seed.py --limit-per-catalog 100 --source-cache dist/cache-seed-large/.cache
 
+      # Embedded devices can avoid GitHub Release's signed CDN redirects by
+      # fetching the same seed ZIPs directly from our hosted-assets branch.
+      - name: Publish direct cache-seed downloads
+        if: steps.plan.outputs.build_seed == 'true'
+        shell: bash
+        env:
+          ASSET_WORKTREE: ${{ steps.asset_branch.outputs.path }}
+        run: |
+          mkdir -p "$ASSET_WORKTREE/seeds"
+          cp dist/wallpaper-cache-seed.zip "$ASSET_WORKTREE/seeds/"
+          cp dist/wallpaper-cache-seed-medium.zip "$ASSET_WORKTREE/seeds/"
+          cp dist/wallpaper-cache-seed-large.zip "$ASSET_WORKTREE/seeds/"
+          git -C "$ASSET_WORKTREE" add seeds
+          if git -C "$ASSET_WORKTREE" diff --cached --quiet; then
+            echo "Direct cache seeds are already current."
+          else
+            git -C "$ASSET_WORKTREE" commit -m "chore: refresh direct-download wallpaper cache seeds"
+            git -C "$ASSET_WORKTREE" push origin HEAD:hosted-assets
+          fi
+
       - name: Publish rolling cache-seed release assets
         if: steps.plan.outputs.build_seed == 'true'
         env:
