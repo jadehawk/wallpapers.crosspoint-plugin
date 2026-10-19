@@ -1,19 +1,19 @@
 {
   "schema": 1,
   "generator_version": "0.1.3",
-  "generated_at": "2026-10-18T20:56:05.251452+00:00",
+  "generated_at": "2026-10-19T04:55:04.992405+00:00",
   "source": "https://www.readme.club/wallpapers",
   "partial": false,
   "page_size": 16,
-  "random_seed": "2026-10-18",
+  "random_seed": "2026-10-19",
   "inventory": {
-    "reported_total": 6290,
+    "reported_total": 6292,
     "reported_pages": 197,
     "fetched_pages": 197,
-    "fetched_unique": 6290
+    "fetched_unique": 6292
   },
-  "unique_records_after_device_crawls": 6290,
-  "public_candidates": 6275,
+  "unique_records_after_device_crawls": 6292,
+  "public_candidates": 6277,
   "excluded_sensitive": 15,
   "device_memberships": {
     "devices/x3": {
@@ -89,14 +89,14 @@
     {
       "key": "latest",
       "title": "Latest",
-      "items": 6275,
+      "items": 6277,
       "pages": 393,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/latest/{page}.json"
     },
     {
       "key": "popular",
       "title": "Popular",
-      "items": 6275,
+      "items": 6277,
       "pages": 393,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/popular/{page}.json"
     },
@@ -152,7 +152,7 @@
     {
       "key": "categories/light",
       "title": "Category · Light",
-      "items": 386,
+      "items": 388,
       "pages": 25,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/categories/light/{page}.json"
     },
