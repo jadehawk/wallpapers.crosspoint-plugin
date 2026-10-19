@@ -140,7 +140,10 @@ jobs:
 
       - name: Build cache seed
         if: steps.plan.outputs.build_seed == 'true'
-        run: python tools/build_cache_seed.py --limit-per-catalog 100
+        run: |
+          python tools/build_cache_seed.py --limit-per-catalog 500 --output dist/cache-seed-large --zip dist/wallpaper-cache-seed-large.zip --summary dist/wallpaper-cache-seed-large.json
+          python tools/build_cache_seed.py --limit-per-catalog 250 --source-cache dist/cache-seed-large/.cache --output dist/cache-seed-medium --zip dist/wallpaper-cache-seed-medium.zip --summary dist/wallpaper-cache-seed-medium.json
+          python tools/build_cache_seed.py --limit-per-catalog 100 --source-cache dist/cache-seed-large/.cache
 
       - name: Publish rolling cache-seed release assets
         if: steps.plan.outputs.build_seed == 'true'
@@ -152,11 +155,18 @@ jobs:
             gh release create cache-seed \
               --prerelease \
               --title "Wallpaper Cache Seed" \
-              --notes "Rolling thumbnail cache seed for firmware with CrossPoint catalog image caching support. Built from up to the first 100 wallpapers in every generated catalog and globally de-duplicated."
+              --notes "Rolling thumbnail cache seeds: Small (100), Medium (250), and Large (500) per catalog, globally de-duplicated."
+
           fi
+
+          gh release edit cache-seed --notes "Rolling thumbnail cache seeds: Small (100), Medium (250), and Large (500) per catalog, globally de-duplicated."
           gh release upload cache-seed \
             dist/wallpaper-cache-seed.zip \
+            dist/wallpaper-cache-seed-medium.zip \
+            dist/wallpaper-cache-seed-large.zip \
             dist/wallpaper-cache-seed.json \
+            dist/wallpaper-cache-seed-medium.json \
+            dist/wallpaper-cache-seed-large.json \
             --clobber
 
       - name: Write workflow summary
@@ -188,6 +198,10 @@ jobs:
           print(f"- Unique thumbnails: {data['built_images']}")
           print(f"- Expanded cache: {data['expanded_cache_bytes'] / (1024 * 1024):.2f} MiB")
           print(f"- ZIP: {zip_bytes / (1024 * 1024):.2f} MiB")
-          print("- Stable download: https://github.com/jadehawk/wallpapers.crosspoint-plugin/releases/download/cache-seed/wallpaper-cache-seed.zip")
+          print("- Small download: https://github.com/jadehawk/wallpapers.crosspoint-plugin/releases/download/cache-seed/wallpaper-cache-seed.zip")
+          for tier in ("medium", "large"):
+              tier_data = json.loads(Path(f"dist/wallpaper-cache-seed-{tier}.json").read_text(encoding="utf-8"))
+              tier_zip = Path(f"dist/wallpaper-cache-seed-{tier}.zip").stat().st_size
+              print(f"- {tier.title()}: {tier_data['built_images']} images, {tier_zip / (1024 * 1024):.2f} MiB ZIP")
           PY
           fi

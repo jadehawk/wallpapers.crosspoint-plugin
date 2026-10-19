@@ -209,10 +209,18 @@ def thumbnail_to_bmp(data: bytes) -> bytes:
     return encode_top_down_1bit_bmp(width, height, pixels)
 
 
-def build_one(item: SeedItem, cache_dir: Path, *, timeout: float, retries: int) -> tuple[str, int]:
-    bmp_path = cache_dir / cache_filename(item.thumbnail_url)
+def build_one(
+    item: SeedItem, cache_dir: Path, *, timeout: float, retries: int, source_cache: Path | None = None
+) -> tuple[str, int]:
+    filename = cache_filename(item.thumbnail_url)
+    bmp_path = cache_dir / filename
     if bmp_path.is_file() and bmp_path.stat().st_size > 62:
         return item.wallpaper_id, bmp_path.stat().st_size
+    if source_cache is not None:
+        source_path = source_cache / filename
+        if source_path.is_file() and source_path.stat().st_size > 62:
+            shutil.copyfile(source_path, bmp_path)
+            return item.wallpaper_id, bmp_path.stat().st_size
     data = request_bytes(SOURCE_THUMBNAIL_URL.format(id=item.wallpaper_id), timeout=timeout, retries=retries)
     bmp = thumbnail_to_bmp(data)
     bmp_path.write_bytes(bmp)
@@ -235,6 +243,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--zip", dest="zip_path", type=Path, default=Path("dist/wallpaper-cache-seed.zip"))
     parser.add_argument("--summary", type=Path, default=Path("dist/wallpaper-cache-seed.json"))
     parser.add_argument("--limit-per-catalog", type=int, default=DEFAULT_PER_CATALOG)
+    parser.add_argument("--source-cache", type=Path, default=None, help="reuse converted BMPs from an existing seed cache")
     parser.add_argument("--workers", type=int, default=DEFAULT_WORKERS)
     parser.add_argument("--timeout", type=float, default=DEFAULT_TIMEOUT)
     parser.add_argument("--retries", type=int, default=DEFAULT_RETRIES)
@@ -270,7 +279,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     completed = 0
     with ThreadPoolExecutor(max_workers=args.workers) as pool:
         future_map = {
-            pool.submit(build_one, item, cache_dir, timeout=args.timeout, retries=args.retries): item for item in items
+            pool.submit(build_one, item, cache_dir, timeout=args.timeout, retries=args.retries, source_cache=args.source_cache): item for item in items
         }
         for future in as_completed(future_map):
             item = future_map[future]

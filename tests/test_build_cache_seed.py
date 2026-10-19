@@ -52,6 +52,26 @@ class SelectionTests(unittest.TestCase):
             self.assertEqual(stats[1]["selected"], 3)
 
 
+class ReuseTests(unittest.TestCase):
+    def test_small_seed_reuses_large_seed_without_network(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "large"
+            output = root / "small"
+            source.mkdir()
+            output.mkdir()
+            item = seed.SeedItem("abc", seed.hosted_thumbnail_url("abc"), ("Latest",))
+            data = b"BM" + bytes(64)
+            (source / seed.cache_filename(item.thumbnail_url)).write_bytes(data)
+            from unittest import mock
+
+            with mock.patch.object(seed, "request_bytes", side_effect=AssertionError("network access")):
+                image_id, size = seed.build_one(item, output, timeout=1, retries=1, source_cache=source)
+
+            self.assertEqual((image_id, size), ("abc", len(data)))
+            self.assertEqual((output / seed.cache_filename(item.thumbnail_url)).read_bytes(), data)
+
+
 class BmpTests(unittest.TestCase):
     def test_thumbnail_conversion_produces_top_down_one_bit_bmp(self) -> None:
         source = Image.new("L", (120, 240), 180)
