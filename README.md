@@ -2,7 +2,7 @@
 
 CrossPoint wallpaper catalog plugin backed by the public ReadMe.club wallpaper gallery.
 
-Version **0.1.3** uses one plugin package for both baseline and enhanced CrossPoint firmware. Stock firmware uses an embedded catalog snapshot and the normal native list UI; capability-aware firmware prefers the live catalog index and enables thumbnails, grid/list layouts, preview, settings, and progressive caching.
+Version **0.1.4** uses one plugin package for both baseline and enhanced CrossPoint firmware. Stock firmware uses an embedded catalog snapshot and the normal native list UI; capability-aware firmware prefers the live catalog index and enables thumbnails, grid/list layouts, preview, settings, and progressive caching.
 
 ## Dual-mode compatibility
 
@@ -20,7 +20,7 @@ Plugin Hub is the preferred installation and update path.
 1. Enable the device plugin system if it is not already enabled.
 2. Open **Plugins** and launch **Plugin Hub**.
 3. Open the Community catalog and refresh it if needed.
-4. Find **Wallpaper Downloader v0.1.3** and choose **Install** or **Update**.
+4. Find **Wallpaper Downloader** and choose **Install** or **Update**. Installed firmware shows the version separately from the plugin title when supported.
 5. Open Wallpaper Downloader from the device Plugins UI after installation.
 
 Plugin Hub discovers the published plugin release and handles the installable payload. The versioned GitHub release ZIP remains available as a manual fallback.
@@ -122,6 +122,8 @@ A full build replaces `catalogs/`, regenerates `wallpapers.crosspoint-plugin/dev
 Generated binary assets are published on the `hosted-assets` branch using deterministic two-character ID shards. High-quality 1-bit BMP previews live under `thumbs/<shard>/<wallpaper-id>.bmp`; device-ready converted wallpapers live under `wallpapers/<shard>/<wallpaper-id>.bmp` when ReadMe.club marks the source as `needs_conversion`. For example, wallpaper `c6a82de5-d681-44ea-99f7-f9805afed042` uses shard `c6`.
 
 Firmware with plugin-catalog caching can install a prebuilt cache seed of **thumbnail BMPs and complete catalog JSON pages**. The generator selects up to the first 100 (Small), 250 (Medium), or 500 (Large) wallpapers per catalog, globally de-duplicating wallpaper IDs. It includes a catalog page only when **every thumbnail on that page, including its look-ahead item**, is in the seed. Missing and expired pages are fetched normally using existing firmware refresh rules.
+
+**Cache seed sizes:** choose Small (default), Medium, or Large in the plugin Cache settings on firmware exposing the seed-size capability. The native choice popup explains that larger archives can take several minutes to install. Install sources use direct URLs on the `hosted-assets` branch, avoiding GitHub Releases redirects. Plugin titles are version-free; the manifest carries the installed version.
 
 The current 17-catalog snapshot contains 814 / 1,838 / 2,684 unique thumbnails and 109 / 273 / 532 cache-page entries for Small / Medium / Large respectively (including default and legacy list identities for the same page). The summary JSON in each ZIP reports the actual counts.
 

@@ -30,7 +30,7 @@ try:
 except ImportError:  # Direct script execution: python tools/build_catalog.py
     from hosted_assets import hosted_thumbnail_url, hosted_wallpaper_url
 
-VERSION = "0.1.3"
+VERSION = "0.1.4"
 SITE_BASE = "https://www.readme.club"
 GALLERY_URL = f"{SITE_BASE}/wallpapers"
 DOWNLOAD_URL = f"{SITE_BASE}/api/wallpapers/{{id}}/proxy-download?format=original"
@@ -414,7 +414,7 @@ def build_device_manifest(raw_base: str, catalog_specs: Sequence[Mapping[str, An
     ]
     catalog_root = raw_base.rstrip("/")
     return {
-        "title": f"Wallpaper Downloader v{VERSION}",
+        "title": "Wallpaper Downloader",
         "description": (
             "Browse ReadMe.club wallpapers on stock CrossPoint and enable enhanced grid, preview, settings, and cache "
             "features on capable firmware."
@@ -517,6 +517,17 @@ def build_device_manifest(raw_base: str, catalog_specs: Sequence[Mapping[str, An
                     {"title": "128 MB", "value": "128"},
                 ],
             },
+            {
+                "key": "seed_url",
+                "title": "Cache seed size",
+                "type": "choice",
+                "default": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/hosted-assets/seeds/wallpaper-cache-seed.zip",
+                "options": [
+                    {"title": "Small", "value": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/hosted-assets/seeds/wallpaper-cache-seed.zip"},
+                    {"title": "Medium", "value": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/hosted-assets/seeds/wallpaper-cache-seed-medium.zip"},
+                    {"title": "Large", "value": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/hosted-assets/seeds/wallpaper-cache-seed-large.zip"},
+                ],
+            },
         ],
         "browse": {
             "format": "json",
@@ -554,12 +565,9 @@ def build_device_manifest(raw_base: str, catalog_specs: Sequence[Mapping[str, An
             "enabled": True,
             "refresh": "{cfg.cache_refresh}",
             "limit_mb": "{cfg.cache_limit_mb}",
-            "seed": {
-                "url": (
-                    "https://github.com/jadehawk/wallpapers.crosspoint-plugin/releases/download/"
-                    "cache-seed/wallpaper-cache-seed.zip"
-                )
-            },
+            "manual_refresh": {"scope": "catalog"},
+            "stale_fallback": True,
+            "seed": {"url": "{cfg.seed_url}"},
         },
         "download": {
             "url": "{url}",

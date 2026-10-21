@@ -4,7 +4,7 @@ CrossPoint plugin for browsing ReadMe.club wallpapers directly on the reader.
 
 ## Version
 
-0.1.3
+0.1.4
 
 ## Install with Plugin Hub
 
@@ -13,8 +13,10 @@ Plugin Hub is the preferred installation and update path.
 1. Enable the device plugin system if it is not already enabled.
 2. Open **Plugins** and launch **Plugin Hub**.
 3. Open the Community catalog and refresh it if needed.
-4. Find **Wallpaper Downloader v0.1.3** and choose **Install** or **Update**.
+4. Find **Wallpaper Downloader** and choose **Install** or **Update**.
 5. Open Wallpaper Downloader from the device Plugins UI after installation.
+
+The version is supplied by the plugin manifest, not in the plugin title.
 
 The same Plugin Hub package works on both baseline and capability-aware firmware; there is no separate enhanced plugin build.
 
@@ -53,3 +55,7 @@ Set CrossPoint's sleep-screen mode to **Custom**. Downloaded wallpapers are stor
 ## Catalog source
 
 Wallpaper metadata and downloads come from ReadMe.club. The repository generator periodically converts the public gallery metadata into small paged JSON files. Baseline firmware uses the embedded release-time catalog index, while capability-aware firmware can consume the live index so category changes can appear without a plugin release.
+
+## Cache seed sizes
+
+Where supported, open **Settings → Cache → Cache seed size** to choose **Small** (default), **Medium**, or **Large**, then select **Download seed**. The picker warns that larger seeds may take several minutes to install. The archives include matching thumbnails and catalog pages; their exact image/page counts vary with catalog updates. Firmware without these cache capabilities continues using the standard browsing/download experience.

@@ -1,10 +1,10 @@
 {
   "name": "wallpapers",
-  "title": "Wallpaper Downloader v0.1.3",
+  "title": "Wallpaper Downloader",
   "mount": "settings",
   "description": "Browse curated ReadMe.club wallpaper catalogs and download sleep-screen images.",
   "author": "jadehawk",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "files": [
     "manifest.json",
     "device.json",

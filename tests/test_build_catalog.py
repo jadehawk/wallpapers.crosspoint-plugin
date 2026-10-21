@@ -153,7 +153,7 @@ class DeviceManifestTests(unittest.TestCase):
             {"key": "devices/x3", "title": "X3", "records": []},
         ]
         manifest = catalog.build_device_manifest("https://example.test/catalogs", specs)
-        self.assertEqual(manifest["title"], "Wallpaper Downloader v0.1.3")
+        self.assertEqual(manifest["title"], "Wallpaper Downloader")
         self.assertEqual(manifest["browse"]["page_size"], 16)
         self.assertEqual(manifest["browse"]["fields"]["url"], "url")
         self.assertEqual(manifest["browse"]["fields"]["thumbnail"], "thumbnail")
@@ -163,10 +163,18 @@ class DeviceManifestTests(unittest.TestCase):
         hide_pagination = next(setting for setting in manifest["settings"] if setting["key"] == "hide_pagination")
         self.assertEqual(hide_pagination["visible_if"], {"device_capability": "touch"})
         self.assertEqual(manifest["cache"]["refresh"], "{cfg.cache_refresh}")
+
+        self.assertEqual(manifest["cache"]["manual_refresh"], {"scope": "catalog"})
+        self.assertTrue(manifest["cache"]["stale_fallback"])
+        seed = next(setting for setting in manifest["settings"] if setting["key"] == "seed_url")
+        self.assertEqual([option["title"] for option in seed["options"]], ["Small", "Medium", "Large"])
+        self.assertEqual(seed["default"], seed["options"][0]["value"])
+        self.assertTrue(all(option["value"].startswith("https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/hosted-assets/seeds/") for option in seed["options"]))
+        self.assertEqual(manifest["cache"]["seed"]["url"], "{cfg.seed_url}")
         self.assertEqual(manifest["download"]["url"], "{url}")
         self.assertEqual(manifest["download"]["preview_on_select"], "{cfg.allow_image_preview}")
         self.assertEqual(manifest["download"]["dest_dir"], "/.sleep")
-        self.assertEqual(manifest["version"], "0.1.3")
+        self.assertEqual(manifest["version"], "0.1.4")
         self.assertEqual(len(manifest["browse"]["lists"]), 3)
         self.assertEqual(
             manifest["browse"]["lists"][0]["url"],
