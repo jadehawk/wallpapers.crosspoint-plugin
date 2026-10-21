@@ -121,20 +121,25 @@ A full build replaces `catalogs/`, regenerates `wallpapers.crosspoint-plugin/dev
 
 Generated binary assets are published on the `hosted-assets` branch using deterministic two-character ID shards. High-quality 1-bit BMP previews live under `thumbs/<shard>/<wallpaper-id>.bmp`; device-ready converted wallpapers live under `wallpapers/<shard>/<wallpaper-id>.bmp` when ReadMe.club marks the source as `needs_conversion`. For example, wallpaper `c6a82de5-d681-44ea-99f7-f9805afed042` uses shard `c6`.
 
-Firmware with plugin-catalog image caching can also use a prebuilt thumbnail seed instead of fetching every first-view thumbnail individually. The seed builder takes up to the first 100 wallpapers from every generated catalog, globally de-duplicates overlapping wallpaper IDs, downloads their thumbnails, and converts them to the same persistent cache filename/layout used by CrossPoint.
+Firmware with plugin-catalog caching can install a prebuilt cache seed of **thumbnail BMPs and complete catalog JSON pages**. The generator selects up to the first 100 (Small), 250 (Medium), or 500 (Large) wallpapers per catalog, globally de-duplicating wallpaper IDs. It includes a catalog page only when **every thumbnail on that page, including its look-ahead item**, is in the seed. Missing and expired pages are fetched normally using existing firmware refresh rules.
 
-The rolling seed is published as a separate **pre-release** so it does not replace the normal semantic-versioned Plugin Hub release:
+The current 17-catalog snapshot contains 814 / 1,838 / 2,684 unique thumbnails and 109 / 273 / 532 cache-page entries for Small / Medium / Large respectively (including default and legacy list identities for the same page). The summary JSON in each ZIP reports the actual counts.
 
-- ZIP: `https://github.com/jadehawk/wallpapers.crosspoint-plugin/releases/download/cache-seed/wallpaper-cache-seed.zip`
-- build summary: `https://github.com/jadehawk/wallpapers.crosspoint-plugin/releases/download/cache-seed/wallpaper-cache-seed.json`
+GitHub Actions builds and validates all three ZIPs **before** rebuilding other hosted image assets. The archives are published to both the `hosted-assets/seeds/` direct-download branch and a rolling **pre-release**, separate from semantic-versioned Plugin Hub releases:
 
-The ZIP contains a `.cache/` directory. Extract it into the installed Wallpaper Downloader plugin directory so the result is `<plugin>/.cache/`. Existing cached images with matching names can be overwritten safely; images outside the seed continue to fill incrementally as catalogs are browsed.
+- Small: `https://github.com/jadehawk/wallpapers.crosspoint-plugin/releases/download/cache-seed/wallpaper-cache-seed.zip`
+- Medium: `https://github.com/jadehawk/wallpapers.crosspoint-plugin/releases/download/cache-seed/wallpaper-cache-seed-medium.zip`
+- Large: `https://github.com/jadehawk/wallpapers.crosspoint-plugin/releases/download/cache-seed/wallpaper-cache-seed-large.zip`
 
-To build the seed locally, install Pillow and run:
+Each ZIP contains `.cache/i_<hash>.bmp`, `.cache/p_<hash>.json`, matching `.meta` files, and `wallpaper-cache-seed.json`. Extract into the installed Wallpaper Downloader plugin directory, producing `<plugin>/.cache/`. Cache pages are keyed to the actual firmware browse URLs and list identities.
+
+To build all three locally, install Pillow and run:
 
 ```powershell
 python -m pip install "Pillow>=11,<13"
-python tools/build_cache_seed.py --limit-per-catalog 100
+python tools/build_cache_seed.py --limit-per-catalog 500 --output dist/cache-seed-large --zip dist/wallpaper-cache-seed-large.zip --summary dist/wallpaper-cache-seed-large.json
+python tools/build_cache_seed.py --limit-per-catalog 250 --source-cache dist/cache-seed-large/.cache --output dist/cache-seed-medium --zip dist/wallpaper-cache-seed-medium.zip --summary dist/wallpaper-cache-seed-medium.json
+python tools/build_cache_seed.py --limit-per-catalog 100 --source-cache dist/cache-seed-large/.cache
 ```
 
 The GitHub Actions workflow runs a lightweight ReadMe.club inventory check every 3 hours. It compares the reported source total/pages and the newest public wallpaper IDs with the committed catalogs snapshot. When that probe detects a change, the catalogs and live `catalogs/index.json` are refreshed, missing hosted thumbnail/converted-wallpaper BMPs are added, and the rolling cache seed is rebuilt. Enhanced firmware sees catalog-navigation changes from the live index immediately. The production `wallpapers.crosspoint-plugin/device.json` is intentionally not rewritten by the automated refresh: its embedded `browse.lists` snapshot changes only with a plugin release, preserving baseline compatibility. A manual catalog build regenerates that static snapshot from the same catalog specs when preparing a new release.

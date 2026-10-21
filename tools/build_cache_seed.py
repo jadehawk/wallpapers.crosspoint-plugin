@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Build a downloadable CrossPoint thumbnail-cache seed from generated catalogs.
+"""Build a downloadable CrossPoint image-and-page cache seed from generated catalogs.
 
-The seed intentionally contains only persistent thumbnail BMPs. Catalog JSON remains
-live and small; after a user installs the seed, opening a catalog still refreshes its
-JSON normally, but the first visible thumbnails can be rendered from SD immediately.
+The seed includes persistent thumbnail BMPs and catalog JSON pages whose every
+thumbnail is in the selection. Page metadata observes firmware cache TTL rules;
+non-seeded or expired pages continue to fetch normally.
 
 By default the script selects the first 100 unique wallpapers from every catalog in
 ``catalogs/index.json`` and globally de-duplicates wallpaper IDs. Those first entries
@@ -42,6 +42,9 @@ SOURCE_THUMBNAIL_URL = (
 )
 # ImageFormat::Bmp == 0. The cache key must exactly match firmware.
 CACHE_IMAGE_PREFIX = "image-v1|200x300|0|GET|"
+CACHE_PAGE_PREFIX = "page-v1"  # Matches PluginCatalogActivity::cachePagePath().
+MAX_SEED_PAGES = 1024
+MAX_SEED_SUMMARY_BYTES = 8 * 1024
 TARGET_WIDTH = 200
 TARGET_HEIGHT = 300
 DEFAULT_PER_CATALOG = 100
@@ -227,6 +230,116 @@ def build_one(
     return item.wallpaper_id, len(bmp)
 
 
+
+def page_cache_filename(
+    url_template: str, requested_page: int, list_index: int,
+    browse: Mapping[str, Any], cache: Mapping[str, Any],
+    *, body_template: str = "",
+) -> str:
+    """Match PluginCatalogActivity::cachePagePath() for public catalogs."""
+    page_size = int(browse["page_size"])
+
+    def substituted(value: str) -> str:
+        return value.replace("{page}", str(requested_page)).replace("{limit}", str(page_size + 1))
+
+    fields = browse["fields"]
+    key = "|".join((
+        CACHE_PAGE_PREFIX, str(browse.get("method") or "GET"),
+        substituted(url_template), substituted(body_template), str(list_index),
+        str(page_size), str(browse.get("items") or ""),
+        *(str(fields.get(field) or "") for field in ("title", "author", "id", "url", "version")),
+    ))
+    namespace = str(cache.get("namespace") or "")
+    if namespace:
+        key += "|namespace|" + namespace
+    if cache.get("token_scoped"):
+        raise ValueError("token-scoped catalogs cannot be pre-seeded")
+    return f"p_{hashlib.md5(key.encode('utf-8')).hexdigest()}.json"
+
+
+def seed_catalog_pages(
+    catalog_root: Path, cache_dir: Path, selected_ids: set[str], device_json: Path, *,
+    captured_at: int,
+) -> tuple[int, int, list[dict[str, Any]]]:
+    """Write complete catalog pages and per-page .meta files in firmware cache format."""
+    index = load_json(catalog_root / "index.json")
+    manifest = load_json(device_json)
+    browse = manifest["browse"]
+    cache = manifest.get("cache") or {}
+    generation = str(cache.get("generation") or "")
+    metadata: dict[str, Any] = {"captured_at": captured_at}
+    if generation:
+        metadata["generation"] = generation
+    metadata_bytes = json.dumps(metadata, separators=(",", ":")).encode("utf-8")
+    written: set[str] = set()
+    total_bytes = 0
+    stats: list[dict[str, Any]] = []
+
+    for dynamic_index, catalog in enumerate(index.get("catalogs") or []):
+        catalog_key = str(catalog["key"]).strip("/")
+        url_template = str(catalog["url"])
+        identities = [(dynamic_index, url_template, str(browse.get("body") or ""))]
+        # Legacy firmware uses the release-time lists; live firmware uses index.json.
+        for static_index, entry in enumerate(browse.get("lists") or []):
+            if entry.get("url") == url_template and static_index != dynamic_index:
+                identities.append((static_index, url_template, str(entry.get("body") or browse.get("body") or "")))
+        # Default browse is a distinct currentList=-1 cache identity.
+        if browse.get("url") == url_template:
+            identities.append((-1, url_template, str(browse.get("body") or "")))
+
+        covered = 0
+        entries = 0
+        for page_number in range(1, int(catalog["pages"]) + 1):
+            source = catalog_root / catalog_key / f"{page_number}.json"
+            payload = load_json(source)
+            items = payload.get("items") or []
+            # Require the look-ahead item used by the firmware's page navigation.
+            if not items or not all(
+                str(item.get("id") or "") in selected_ids
+                and item.get("thumbnail") == hosted_thumbnail_url(str(item.get("id") or ""))
+                for item in items
+            ):
+                continue
+            source_bytes = source.read_bytes()
+            covered += 1
+            for list_index, url, body in identities:
+                filename = page_cache_filename(url, page_number, list_index, browse, cache, body_template=body)
+                if filename in written:
+                    continue
+                written.add(filename)
+                page_file = cache_dir / filename
+                page_file.write_bytes(source_bytes)
+                page_file.with_suffix(".meta").write_bytes(metadata_bytes)
+                total_bytes += len(source_bytes) + len(metadata_bytes)
+                entries += 1
+                if len(written) > MAX_SEED_PAGES:
+                    raise ValueError(f"seed exceeds firmware's {MAX_SEED_PAGES} page limit")
+
+        stats.append({"key": catalog_key, "complete_pages": covered, "seeded_page_entries": entries})
+    return len(written), total_bytes, stats
+
+
+def verify_seed_zip(zip_path: Path, summary: Mapping[str, Any]) -> None:
+    """Reject malformed seed ZIPs before GitHub publishes them."""
+    with zipfile.ZipFile(zip_path) as archive:
+        names = archive.namelist()
+        images = [n for n in names if n.startswith(".cache/i_") and n.endswith(".bmp")]
+        pages = [n for n in names if n.startswith(".cache/p_") and n.endswith(".json")]
+        metas = [n for n in names if n.startswith(".cache/p_") and n.endswith(".meta")]
+        if (
+            len(images) != summary["built_images"]
+            or len(pages) != summary["built_pages"]
+            or len(metas) != len(pages)
+            or "wallpaper-cache-seed.json" not in names
+            or len(names) != len(set(names))
+        ):
+            raise ValueError(f"invalid seed ZIP entries: {zip_path}")
+        if any(n[:-5] + ".meta" not in names for n in pages):
+            raise ValueError("seed ZIP has catalog pages without metadata")
+        if len(archive.read("wallpaper-cache-seed.json")) > MAX_SEED_SUMMARY_BYTES:
+            raise ValueError("cache seed summary exceeds firmware's 8 KiB limit")
+
+
 def write_seed_zip(seed_root: Path, zip_path: Path, summary_path: Path) -> None:
     zip_path.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
@@ -239,6 +352,7 @@ def write_seed_zip(seed_root: Path, zip_path: Path, summary_path: Path) -> None:
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--catalogs", type=Path, default=Path("catalogs"))
+    parser.add_argument("--device-json", type=Path, default=Path("wallpapers.crosspoint-plugin/device.json"))
     parser.add_argument("--output", type=Path, default=Path("dist/cache-seed"))
     parser.add_argument("--zip", dest="zip_path", type=Path, default=Path("dist/wallpaper-cache-seed.zip"))
     parser.add_argument("--summary", type=Path, default=Path("dist/wallpaper-cache-seed.json"))
@@ -277,6 +391,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     failures: list[tuple[str, str]] = []
     total_bytes = 0
     completed = 0
+    built_ids: set[str] = set()
     with ThreadPoolExecutor(max_workers=args.workers) as pool:
         future_map = {
             pool.submit(build_one, item, cache_dir, timeout=args.timeout, retries=args.retries, source_cache=args.source_cache): item for item in items
@@ -284,7 +399,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         for future in as_completed(future_map):
             item = future_map[future]
             try:
-                _, size = future.result()
+                image_id, size = future.result()
+                built_ids.add(image_id)
                 total_bytes += size
                 completed += 1
                 if completed % 100 == 0 or completed == len(items):
@@ -292,6 +408,15 @@ def main(argv: Sequence[str] | None = None) -> int:
             except Exception as exc:  # noqa: BLE001 - aggregate failures for a useful workflow summary
                 failures.append((item.wallpaper_id, str(exc)))
                 print(f"  FAILED {item.wallpaper_id}: {exc}", flush=True)
+
+    if failures:
+        raise SystemExit(f"cache seed incomplete: {len(failures)} thumbnail(s) failed")
+
+    page_count, page_bytes, page_stats = seed_catalog_pages(
+        args.catalogs, cache_dir, built_ids, args.device_json, captured_at=int(time.time())
+    )
+    for stat, page_stat in zip(catalog_stats, page_stats):
+        stat.update(page_stat)
 
     summary = {
         "schema": 1,
@@ -303,10 +428,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         "selected_unique_images": len(items),
         "built_images": completed,
         "failed_images": len(failures),
-        "expanded_cache_bytes": total_bytes,
+        "built_pages": page_count,
+        "expanded_image_bytes": total_bytes,
+        "expanded_page_bytes": page_bytes,
+        "expanded_cache_bytes": total_bytes + page_bytes,
         "cache_format": {
             "path": ".cache/i_<md5>.bmp",
-            "key": "image-v1|200x300|1|GET|<thumbnail-url>|",
+            "key": "image-v1|200x300|0|GET|<thumbnail-url>|",
+            "page_path": ".cache/p_<md5>.json and matching .meta",
+            "page_key": "page-v1|GET|<url>||<list-index>|<page-size>|<fields>",
             "bmp": "1-bit top-down BMP; scale-to-cover 200x300; Atkinson dither",
         },
         "catalogs": catalog_stats,
@@ -315,13 +445,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     args.summary.parent.mkdir(parents=True, exist_ok=True)
     args.summary.write_text(json.dumps(summary, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
-    if failures:
-        raise SystemExit(f"cache seed incomplete: {len(failures)} thumbnail(s) failed")
-
     write_seed_zip(args.output, args.zip_path, args.summary)
+    verify_seed_zip(args.zip_path, summary)
     zip_size = args.zip_path.stat().st_size
     print(
-        f"Done: {completed} thumbnails, {total_bytes / (1024 * 1024):.2f} MiB expanded, "
+        f"Done: {completed} thumbnails, {page_count} catalog pages, "
+        f"{(total_bytes + page_bytes) / (1024 * 1024):.2f} MiB expanded, "
         f"{zip_size / (1024 * 1024):.2f} MiB ZIP -> {args.zip_path}",
         flush=True,
     )

@@ -104,6 +104,33 @@ jobs:
         if: steps.plan.outputs.build_seed == 'true'
         run: python -m pip install "Pillow>=11,<13"
 
+      - name: Test cache seed generator
+        if: steps.plan.outputs.build_seed == 'true'
+        run: python -m unittest discover -s tests -v
+
+      - name: Build cache seed
+        if: steps.plan.outputs.build_seed == 'true'
+        run: |
+          python tools/build_cache_seed.py --limit-per-catalog 500 --output dist/cache-seed-large --zip dist/wallpaper-cache-seed-large.zip --summary dist/wallpaper-cache-seed-large.json
+          python tools/build_cache_seed.py --limit-per-catalog 250 --source-cache dist/cache-seed-large/.cache --output dist/cache-seed-medium --zip dist/wallpaper-cache-seed-medium.zip --summary dist/wallpaper-cache-seed-medium.json
+          python tools/build_cache_seed.py --limit-per-catalog 100 --source-cache dist/cache-seed-large/.cache
+
+      - name: Verify Small Medium and Large ZIP contents
+        if: steps.plan.outputs.build_seed == 'true'
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from tools.build_cache_seed import verify_seed_zip
+          for tier in ("", "-medium", "-large"):
+              root = Path("dist")
+              summary = json.loads((root / f"wallpaper-cache-seed{tier}.json").read_text(encoding="utf-8"))
+              if summary["built_images"] <= 0 or summary["built_pages"] <= 0:
+                  raise SystemExit(f"missing seeded images or pages in {tier or 'small'}")
+              verify_seed_zip(root / f"wallpaper-cache-seed{tier}.zip", summary)
+              print(f"{tier or '-small'}: {summary['built_images']} images, {summary['built_pages']} pages verified")
+          PY
+
       - name: Prepare hosted asset branch
         id: asset_branch
         if: steps.plan.outputs.build_seed == 'true'
@@ -112,38 +139,9 @@ jobs:
           asset_worktree="$RUNNER_TEMP/hosted-assets"
           git fetch origin hosted-assets:refs/remotes/origin/hosted-assets
           git worktree add -B hosted-assets "$asset_worktree" origin/hosted-assets
+          git -C "$asset_worktree" config user.name "github-actions[bot]"
+          git -C "$asset_worktree" config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           echo "path=$asset_worktree" >> "$GITHUB_OUTPUT"
-
-      - name: Build hosted thumbnails
-        if: steps.plan.outputs.build_seed == 'true'
-        run: python tools/build_hosted_thumbnails.py --output "${{ steps.asset_branch.outputs.path }}/thumbs"
-
-      - name: Build hosted wallpapers
-        if: steps.plan.outputs.build_seed == 'true'
-        run: python tools/build_hosted_wallpapers.py --output "${{ steps.asset_branch.outputs.path }}/wallpapers"
-
-      - name: Publish hosted assets
-        if: steps.plan.outputs.build_seed == 'true'
-        shell: bash
-        env:
-          ASSET_WORKTREE: ${{ steps.asset_branch.outputs.path }}
-        run: |
-          git -C "$ASSET_WORKTREE" config user.name "github-actions[bot]"
-          git -C "$ASSET_WORKTREE" config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git -C "$ASSET_WORKTREE" add thumbs wallpapers
-          if git -C "$ASSET_WORKTREE" diff --cached --quiet; then
-            echo "Hosted assets already match the current catalogs."
-          else
-            git -C "$ASSET_WORKTREE" commit -m "chore: refresh generated wallpaper assets"
-            git -C "$ASSET_WORKTREE" push origin HEAD:hosted-assets
-          fi
-
-      - name: Build cache seed
-        if: steps.plan.outputs.build_seed == 'true'
-        run: |
-          python tools/build_cache_seed.py --limit-per-catalog 500 --output dist/cache-seed-large --zip dist/wallpaper-cache-seed-large.zip --summary dist/wallpaper-cache-seed-large.json
-          python tools/build_cache_seed.py --limit-per-catalog 250 --source-cache dist/cache-seed-large/.cache --output dist/cache-seed-medium --zip dist/wallpaper-cache-seed-medium.zip --summary dist/wallpaper-cache-seed-medium.json
-          python tools/build_cache_seed.py --limit-per-catalog 100 --source-cache dist/cache-seed-large/.cache
 
       # Embedded devices can avoid GitHub Release's signed CDN redirects by
       # fetching the same seed ZIPs directly from our hosted-assets branch.
@@ -175,11 +173,11 @@ jobs:
             gh release create cache-seed \
               --prerelease \
               --title "Wallpaper Cache Seed" \
-              --notes "Rolling thumbnail cache seeds: Small (100), Medium (250), and Large (500) per catalog, globally de-duplicated."
+              --notes "Rolling image and complete catalog-page cache seeds: Small (100), Medium (250), and Large (500) images per catalog, globally de-duplicated."
 
           fi
 
-          gh release edit cache-seed --notes "Rolling thumbnail cache seeds: Small (100), Medium (250), and Large (500) per catalog, globally de-duplicated."
+          gh release edit cache-seed --notes "Rolling image and complete catalog-page cache seeds: Small (100), Medium (250), and Large (500) images per catalog, globally de-duplicated."
           gh release upload cache-seed \
             dist/wallpaper-cache-seed.zip \
             dist/wallpaper-cache-seed-medium.zip \
@@ -188,6 +186,30 @@ jobs:
             dist/wallpaper-cache-seed-medium.json \
             dist/wallpaper-cache-seed-large.json \
             --clobber
+
+      - name: Build hosted thumbnails
+        if: steps.plan.outputs.build_seed == 'true'
+        run: python tools/build_hosted_thumbnails.py --output "${{ steps.asset_branch.outputs.path }}/thumbs"
+
+      - name: Build hosted wallpapers
+        if: steps.plan.outputs.build_seed == 'true'
+        run: python tools/build_hosted_wallpapers.py --output "${{ steps.asset_branch.outputs.path }}/wallpapers"
+
+      - name: Publish hosted assets
+        if: steps.plan.outputs.build_seed == 'true'
+        shell: bash
+        env:
+          ASSET_WORKTREE: ${{ steps.asset_branch.outputs.path }}
+        run: |
+          git -C "$ASSET_WORKTREE" config user.name "github-actions[bot]"
+          git -C "$ASSET_WORKTREE" config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C "$ASSET_WORKTREE" add thumbs wallpapers
+          if git -C "$ASSET_WORKTREE" diff --cached --quiet; then
+            echo "Hosted assets already match the current catalogs."
+          else
+            git -C "$ASSET_WORKTREE" commit -m "chore: refresh generated wallpaper assets"
+            git -C "$ASSET_WORKTREE" push origin HEAD:hosted-assets
+          fi
 
       - name: Write workflow summary
         if: always()
@@ -216,12 +238,13 @@ jobs:
           print()
           print(f"- Catalogs: {data['catalog_count']}")
           print(f"- Unique thumbnails: {data['built_images']}")
+          print(f"- Cached catalog pages: {data['built_pages']}")
           print(f"- Expanded cache: {data['expanded_cache_bytes'] / (1024 * 1024):.2f} MiB")
           print(f"- ZIP: {zip_bytes / (1024 * 1024):.2f} MiB")
           print("- Small download: https://github.com/jadehawk/wallpapers.crosspoint-plugin/releases/download/cache-seed/wallpaper-cache-seed.zip")
           for tier in ("medium", "large"):
               tier_data = json.loads(Path(f"dist/wallpaper-cache-seed-{tier}.json").read_text(encoding="utf-8"))
               tier_zip = Path(f"dist/wallpaper-cache-seed-{tier}.zip").stat().st_size
-              print(f"- {tier.title()}: {tier_data['built_images']} images, {tier_zip / (1024 * 1024):.2f} MiB ZIP")
+              print(f"- {tier.title()}: {tier_data['built_images']} images, {tier_data['built_pages']} pages, {tier_zip / (1024 * 1024):.2f} MiB ZIP")
           PY
           fi
