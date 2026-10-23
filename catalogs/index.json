@@ -1,19 +1,19 @@
 {
   "schema": 1,
   "generator_version": "0.1.4",
-  "generated_at": "2026-10-22T21:45:01.910992+00:00",
+  "generated_at": "2026-10-23T05:02:37.682840+00:00",
   "source": "https://www.readme.club/wallpapers",
   "partial": false,
   "page_size": 16,
-  "random_seed": "2026-10-22",
+  "random_seed": "2026-10-23",
   "inventory": {
-    "reported_total": 6412,
+    "reported_total": 6413,
     "reported_pages": 201,
     "fetched_pages": 201,
-    "fetched_unique": 6412
+    "fetched_unique": 6413
   },
-  "unique_records_after_device_crawls": 6412,
-  "public_candidates": 6396,
+  "unique_records_after_device_crawls": 6413,
+  "public_candidates": 6397,
   "excluded_sensitive": 16,
   "device_memberships": {
     "devices/x3": {
@@ -89,14 +89,14 @@
     {
       "key": "latest",
       "title": "Latest",
-      "items": 6396,
+      "items": 6397,
       "pages": 400,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/latest/{page}.json"
     },
     {
       "key": "popular",
       "title": "Popular",
-      "items": 6396,
+      "items": 6397,
       "pages": 400,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/popular/{page}.json"
     },
@@ -173,7 +173,7 @@
     {
       "key": "categories/pop_culture",
       "title": "Category · Pop Culture",
-      "items": 977,
+      "items": 978,
       "pages": 62,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/categories/pop_culture/{page}.json"
     },
