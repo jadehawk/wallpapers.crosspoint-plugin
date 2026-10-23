@@ -1,31 +1,31 @@
 {
   "schema": 1,
   "generator_version": "0.1.4",
-  "generated_at": "2026-10-23T05:02:37.682840+00:00",
+  "generated_at": "2026-10-23T11:49:55.475593+00:00",
   "source": "https://www.readme.club/wallpapers",
   "partial": false,
   "page_size": 16,
   "random_seed": "2026-10-23",
   "inventory": {
-    "reported_total": 6413,
+    "reported_total": 6415,
     "reported_pages": 201,
     "fetched_pages": 201,
-    "fetched_unique": 6413
+    "fetched_unique": 6415
   },
-  "unique_records_after_device_crawls": 6413,
-  "public_candidates": 6397,
+  "unique_records_after_device_crawls": 6415,
+  "public_candidates": 6399,
   "excluded_sensitive": 16,
   "device_memberships": {
     "devices/x3": {
       "filters": {
         "x3": {
-          "reported_total": 355,
+          "reported_total": 357,
           "reported_pages": 12,
           "fetched_pages": 12,
-          "fetched_unique": 355
+          "fetched_unique": 357
         }
       },
-      "unique": 351
+      "unique": 353
     },
     "devices/x4-family": {
       "filters": {
@@ -89,22 +89,22 @@
     {
       "key": "latest",
       "title": "Latest",
-      "items": 6397,
+      "items": 6399,
       "pages": 400,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/latest/{page}.json"
     },
     {
       "key": "popular",
       "title": "Popular",
-      "items": 6397,
+      "items": 6399,
       "pages": 400,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/popular/{page}.json"
     },
     {
       "key": "devices/x3",
       "title": "X3",
-      "items": 351,
-      "pages": 22,
+      "items": 353,
+      "pages": 23,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/devices/x3/{page}.json"
     },
     {
@@ -138,14 +138,14 @@
     {
       "key": "categories/custom",
       "title": "Category · Custom",
-      "items": 3650,
+      "items": 3651,
       "pages": 229,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/categories/custom/{page}.json"
     },
     {
       "key": "categories/dark",
       "title": "Category · Dark",
-      "items": 343,
+      "items": 344,
       "pages": 22,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/categories/dark/{page}.json"
     },
