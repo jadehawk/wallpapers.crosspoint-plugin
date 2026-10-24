@@ -1,19 +1,19 @@
 {
   "schema": 1,
   "generator_version": "0.1.4",
-  "generated_at": "2026-10-24T20:58:24.634646+00:00",
+  "generated_at": "2026-10-24T23:22:44.740066+00:00",
   "source": "https://www.readme.club/wallpapers",
   "partial": false,
   "page_size": 16,
   "random_seed": "2026-10-24",
   "inventory": {
-    "reported_total": 6426,
+    "reported_total": 6428,
     "reported_pages": 201,
     "fetched_pages": 201,
-    "fetched_unique": 6426
+    "fetched_unique": 6428
   },
-  "unique_records_after_device_crawls": 6426,
-  "public_candidates": 6410,
+  "unique_records_after_device_crawls": 6428,
+  "public_candidates": 6412,
   "excluded_sensitive": 16,
   "device_memberships": {
     "devices/x3": {
@@ -30,41 +30,41 @@
     "devices/x4-family": {
       "filters": {
         "x4": {
-          "reported_total": 5252,
+          "reported_total": 5254,
           "reported_pages": 165,
           "fetched_pages": 165,
-          "fetched_unique": 5252
+          "fetched_unique": 5254
         },
         "x4pro": {
-          "reported_total": 5252,
+          "reported_total": 5254,
           "reported_pages": 165,
           "fetched_pages": 165,
-          "fetched_unique": 5252
+          "fetched_unique": 5254
         }
       },
-      "unique": 5245
+      "unique": 5247
     },
     "devices/picco": {
       "filters": {
         "boox-picco": {
-          "reported_total": 5397,
+          "reported_total": 5399,
           "reported_pages": 169,
           "fetched_pages": 169,
-          "fetched_unique": 5397
+          "fetched_unique": 5399
         }
       },
-      "unique": 5389
+      "unique": 5391
     },
     "devices/sticky": {
       "filters": {
         "seeedstudio-sticky": {
-          "reported_total": 5397,
+          "reported_total": 5399,
           "reported_pages": 169,
           "fetched_pages": 169,
-          "fetched_unique": 5397
+          "fetched_unique": 5399
         }
       },
-      "unique": 5389
+      "unique": 5391
     },
     "devices/paper-pro-move": {
       "filters": {
@@ -89,14 +89,14 @@
     {
       "key": "latest",
       "title": "Latest",
-      "items": 6410,
+      "items": 6412,
       "pages": 401,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/latest/{page}.json"
     },
     {
       "key": "popular",
       "title": "Popular",
-      "items": 6410,
+      "items": 6412,
       "pages": 401,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/popular/{page}.json"
     },
@@ -110,21 +110,21 @@
     {
       "key": "devices/x4-family",
       "title": "X4 / X4 Pro / X4C",
-      "items": 5245,
+      "items": 5247,
       "pages": 328,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/devices/x4-family/{page}.json"
     },
     {
       "key": "devices/picco",
       "title": "Picco",
-      "items": 5389,
+      "items": 5391,
       "pages": 337,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/devices/picco/{page}.json"
     },
     {
       "key": "devices/sticky",
       "title": "Seeed reTerminal Sticky",
-      "items": 5389,
+      "items": 5391,
       "pages": 337,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/devices/sticky/{page}.json"
     },
@@ -152,8 +152,8 @@
     {
       "key": "categories/light",
       "title": "Category · Light",
-      "items": 400,
-      "pages": 25,
+      "items": 401,
+      "pages": 26,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/categories/light/{page}.json"
     },
     {
@@ -173,7 +173,7 @@
     {
       "key": "categories/pop_culture",
       "title": "Category · Pop Culture",
-      "items": 979,
+      "items": 980,
       "pages": 62,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/categories/pop_culture/{page}.json"
     },
