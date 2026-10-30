@@ -1,31 +1,31 @@
 {
   "schema": 1,
   "generator_version": "0.1.4",
-  "generated_at": "2026-10-30T10:13:28.529338+00:00",
+  "generated_at": "2026-10-30T22:28:50.733591+00:00",
   "source": "https://www.readme.club/wallpapers",
   "partial": false,
   "page_size": 16,
   "random_seed": "2026-10-30",
   "inventory": {
-    "reported_total": 6520,
+    "reported_total": 6525,
     "reported_pages": 204,
     "fetched_pages": 204,
-    "fetched_unique": 6520
+    "fetched_unique": 6525
   },
-  "unique_records_after_device_crawls": 6520,
-  "public_candidates": 6503,
+  "unique_records_after_device_crawls": 6525,
+  "public_candidates": 6508,
   "excluded_sensitive": 17,
   "device_memberships": {
     "devices/x3": {
       "filters": {
         "x3": {
-          "reported_total": 370,
+          "reported_total": 374,
           "reported_pages": 12,
           "fetched_pages": 12,
-          "fetched_unique": 370
+          "fetched_unique": 374
         }
       },
-      "unique": 366
+      "unique": 370
     },
     "devices/x4-family": {
       "filters": {
@@ -89,22 +89,22 @@
     {
       "key": "latest",
       "title": "Latest",
-      "items": 6503,
+      "items": 6508,
       "pages": 407,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/latest/{page}.json"
     },
     {
       "key": "popular",
       "title": "Popular",
-      "items": 6503,
+      "items": 6508,
       "pages": 407,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/popular/{page}.json"
     },
     {
       "key": "devices/x3",
       "title": "X3",
-      "items": 366,
-      "pages": 23,
+      "items": 370,
+      "pages": 24,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/devices/x3/{page}.json"
     },
     {
@@ -145,14 +145,14 @@
     {
       "key": "categories/dark",
       "title": "Category · Dark",
-      "items": 355,
+      "items": 357,
       "pages": 23,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/categories/dark/{page}.json"
     },
     {
       "key": "categories/light",
       "title": "Category · Light",
-      "items": 401,
+      "items": 403,
       "pages": 26,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/categories/light/{page}.json"
     },
@@ -173,7 +173,7 @@
     {
       "key": "categories/pop_culture",
       "title": "Category · Pop Culture",
-      "items": 1012,
+      "items": 1013,
       "pages": 64,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/categories/pop_culture/{page}.json"
     },
