@@ -1,19 +1,19 @@
 {
   "schema": 1,
   "generator_version": "0.1.4",
-  "generated_at": "2026-10-30T01:08:42.195795+00:00",
+  "generated_at": "2026-10-30T10:13:28.529338+00:00",
   "source": "https://www.readme.club/wallpapers",
   "partial": false,
   "page_size": 16,
   "random_seed": "2026-10-30",
   "inventory": {
-    "reported_total": 6517,
+    "reported_total": 6520,
     "reported_pages": 204,
     "fetched_pages": 204,
-    "fetched_unique": 6517
+    "fetched_unique": 6520
   },
-  "unique_records_after_device_crawls": 6517,
-  "public_candidates": 6500,
+  "unique_records_after_device_crawls": 6520,
+  "public_candidates": 6503,
   "excluded_sensitive": 17,
   "device_memberships": {
     "devices/x3": {
@@ -89,14 +89,14 @@
     {
       "key": "latest",
       "title": "Latest",
-      "items": 6500,
+      "items": 6503,
       "pages": 407,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/latest/{page}.json"
     },
     {
       "key": "popular",
       "title": "Popular",
-      "items": 6500,
+      "items": 6503,
       "pages": 407,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/popular/{page}.json"
     },
@@ -166,7 +166,7 @@
     {
       "key": "categories/other",
       "title": "Category · Other",
-      "items": 369,
+      "items": 372,
       "pages": 24,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/categories/other/{page}.json"
     },
