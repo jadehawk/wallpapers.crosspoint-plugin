@@ -146,6 +146,12 @@ class PackTests(unittest.TestCase):
 
 
 class DeviceManifestTests(unittest.TestCase):
+    def test_random_mix_is_last_catalog(self) -> None:
+        specs = catalog.build_catalog_specs([], {}, {}, random_count=96, random_seed="test")
+        self.assertEqual(specs[0]["key"], "latest")
+        self.assertEqual(specs[1]["key"], "popular")
+        self.assertEqual(specs[-1]["key"], "random")
+
     def test_manifest_keeps_static_lists_and_advertises_dynamic_enhancements(self) -> None:
         specs = [
             {"key": "random", "title": "Random Mix", "records": []},
@@ -174,7 +180,7 @@ class DeviceManifestTests(unittest.TestCase):
         self.assertEqual(manifest["download"]["url"], "{url}")
         self.assertEqual(manifest["download"]["preview_on_select"], "{cfg.allow_image_preview}")
         self.assertEqual(manifest["download"]["dest_dir"], "/.sleep")
-        self.assertEqual(manifest["version"], "0.1.4")
+        self.assertEqual(manifest["version"], "0.1.5")
         self.assertEqual(len(manifest["browse"]["lists"]), 3)
         self.assertEqual(
             manifest["browse"]["lists"][0]["url"],

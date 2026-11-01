@@ -2,7 +2,7 @@
 
 CrossPoint wallpaper catalog plugin backed by the public ReadMe.club wallpaper gallery.
 
-Version **0.1.4** uses one plugin package for both baseline and enhanced CrossPoint firmware. Stock firmware uses an embedded catalog snapshot and the normal native list UI; capability-aware firmware prefers the live catalog index and enables thumbnails, grid/list layouts, preview, settings, and progressive caching.
+Version **0.1.5** uses one plugin package for both baseline and enhanced CrossPoint firmware. Stock firmware uses an embedded catalog snapshot and the normal native list UI; capability-aware firmware prefers the live catalog index and enables thumbnails, grid/list layouts, preview, settings, and progressive caching.
 
 ## Dual-mode compatibility
 
@@ -48,7 +48,6 @@ The direct child `wallpapers.crosspoint-plugin/` follows the Plugin Hub standalo
 
 A normal build creates:
 
-- Random Mix
 - Latest
 - Popular
 - X3
@@ -63,6 +62,7 @@ A normal build creates:
 - Category · Other
 - Category · Pop Culture
 - recent monthly curated packs
+- Random Mix (last)
 
 Device catalogs use ReadMe.club's public `fits` filters. The X4 family list currently combines the X4 and X4 Pro compatibility filters because the site does not expose a separate X4C filter.
 
@@ -125,7 +125,7 @@ Firmware with plugin-catalog caching can install a prebuilt cache seed of **thum
 
 **Cache seed sizes:** choose Small (default), Medium, or Large in the plugin Cache settings on firmware exposing the seed-size capability. The native choice popup explains that larger archives can take several minutes to install. Install sources use direct URLs on the `hosted-assets` branch, avoiding GitHub Releases redirects. Plugin titles are version-free; the manifest carries the installed version.
 
-The current 17-catalog snapshot contains 814 / 1,838 / 2,684 unique thumbnails and 109 / 273 / 532 cache-page entries for Small / Medium / Large respectively (including default and legacy list identities for the same page). The summary JSON in each ZIP reports the actual counts.
+The current 17-catalog snapshot contains 805 / 1,833 / 2,728 unique thumbnails and 120 / 264 / 534 cache-page entries for Small / Medium / Large respectively (including default and legacy list identities for the same page). The summary JSON in each ZIP reports the actual counts.
 
 GitHub Actions builds and validates all three ZIPs **before** rebuilding other hosted image assets. The archives are published to both the `hosted-assets/seeds/` direct-download branch and a rolling **pre-release**, separate from semantic-versioned Plugin Hub releases:
 

@@ -224,8 +224,18 @@ def build_one(
         if source_path.is_file() and source_path.stat().st_size > 62:
             shutil.copyfile(source_path, bmp_path)
             return item.wallpaper_id, bmp_path.stat().st_size
-    data = request_bytes(SOURCE_THUMBNAIL_URL.format(id=item.wallpaper_id), timeout=timeout, retries=retries)
-    bmp = thumbnail_to_bmp(data)
+    # Prefer the already-published, device-ready 1-bit BMP. ReadMe.club may
+    # withdraw old thumbnails while the catalog snapshot still references them.
+    try:
+        bmp = request_bytes(item.thumbnail_url, timeout=timeout, retries=retries)
+        if len(bmp) < 62 or len(bmp) > 64 * 1024 or bmp[:2] != b"BM":
+            raise ValueError("invalid hosted BMP")
+        width, height = struct.unpack_from("<ii", bmp, 18)
+        if width < TARGET_WIDTH or height > -TARGET_HEIGHT or struct.unpack_from("<H", bmp, 28)[0] != 1:
+            raise ValueError("unexpected hosted BMP dimensions or depth")
+    except (OSError, RuntimeError, ValueError):
+        data = request_bytes(SOURCE_THUMBNAIL_URL.format(id=item.wallpaper_id), timeout=timeout, retries=retries)
+        bmp = thumbnail_to_bmp(data)
     bmp_path.write_bytes(bmp)
     return item.wallpaper_id, len(bmp)
 

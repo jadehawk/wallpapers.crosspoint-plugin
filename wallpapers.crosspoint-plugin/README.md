@@ -4,7 +4,7 @@ CrossPoint plugin for browsing ReadMe.club wallpapers directly on the reader.
 
 ## Version
 
-0.1.4
+0.1.5
 
 ## Install with Plugin Hub
 
@@ -31,7 +31,6 @@ The same Plugin Hub package works on both baseline and capability-aware firmware
 
 The native catalog exposes generated ReadMe.club collections including:
 
-- Random Mix
 - Latest
 - Popular
 - X3
@@ -41,6 +40,9 @@ The native catalog exposes generated ReadMe.club collections including:
 - Paper Pro Move
 - Custom, Dark, Light, Minimalist, Other, and Pop Culture categories
 - Recent monthly curated packs
+- Random Mix (last)
+
+On compatible firmware, opening the plugin without an installed cache seed shows a one-time tip pointing to Settings > Cache. Installing a seed is optional; it improves cached navigation and reduces network traffic, but online browsing remains available.
 
 Each catalog item retains the wallpaper title, category, uploader, download count, source-device metadata, dimensions, thumbnail URL, source format, and tracked download URL. Selecting an entry downloads the wallpaper into `/.sleep` on the SD card.
 

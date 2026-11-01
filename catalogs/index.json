@@ -80,13 +80,6 @@
   },
   "catalogs": [
     {
-      "key": "random",
-      "title": "Random Mix",
-      "items": 96,
-      "pages": 6,
-      "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/random/{page}.json"
-    },
-    {
       "key": "latest",
       "title": "Latest",
       "items": 6349,
@@ -197,6 +190,13 @@
       "items": 59,
       "pages": 4,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/packs/2026-08/{page}.json"
+    },
+    {
+      "key": "random",
+      "title": "Random Mix",
+      "items": 96,
+      "pages": 6,
+      "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/random/{page}.json"
     }
   ]
 }

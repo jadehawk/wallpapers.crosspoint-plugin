@@ -71,6 +71,33 @@ class ReuseTests(unittest.TestCase):
             self.assertEqual((image_id, size), ("abc", len(data)))
             self.assertEqual((output / seed.cache_filename(item.thumbnail_url)).read_bytes(), data)
 
+    def test_missing_cached_thumbnail_uses_published_bmp(self) -> None:
+        from unittest import mock
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            item = seed.SeedItem("abc", seed.hosted_thumbnail_url("abc"), ("Latest",))
+            bmp = seed.encode_top_down_1bit_bmp(200, 300, bytes([255]) * (200 * 300))
+            with mock.patch.object(seed, "request_bytes", return_value=bmp) as request:
+                image_id, size = seed.build_one(item, root, timeout=1, retries=1)
+            self.assertEqual((image_id, size), ("abc", len(bmp)))
+            request.assert_called_once_with(item.thumbnail_url, timeout=1, retries=1)
+
+    def test_invalid_hosted_bmp_falls_back_to_source_thumbnail(self) -> None:
+        from unittest import mock
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            item = seed.SeedItem("abc", seed.hosted_thumbnail_url("abc"), ("Latest",))
+            image = Image.new("L", (120, 240), 180)
+            encoded = io.BytesIO()
+            image.save(encoded, format="JPEG")
+            with mock.patch.object(seed, "request_bytes", side_effect=[b"not a BMP", encoded.getvalue()]) as request:
+                image_id, size = seed.build_one(item, root, timeout=1, retries=1)
+            self.assertEqual(image_id, "abc")
+            self.assertGreater(size, 62)
+            self.assertEqual(request.call_count, 2)
+
 
 class PageSeedTests(unittest.TestCase):
     def test_page_filename_matches_firmware_key_including_default_list(self) -> None:

@@ -30,7 +30,7 @@ try:
 except ImportError:  # Direct script execution: python tools/build_catalog.py
     from hosted_assets import hosted_thumbnail_url, hosted_wallpaper_url
 
-VERSION = "0.1.4"
+VERSION = "0.1.5"
 SITE_BASE = "https://www.readme.club"
 GALLERY_URL = f"{SITE_BASE}/wallpapers"
 DOWNLOAD_URL = f"{SITE_BASE}/api/wallpapers/{{id}}/proxy-download?format=original"
@@ -591,13 +591,6 @@ def build_catalog_specs(
 
     random_records = [dict(record) for record in safe_records]
     random.Random(random_seed).shuffle(random_records)
-    specs.append(
-        {
-            "key": "random",
-            "title": "Random Mix",
-            "records": random_records[: max(1, random_count)],
-        }
-    )
     specs.append({"key": "latest", "title": "Latest", "records": sort_latest(safe_records)})
     specs.append({"key": "popular", "title": "Popular", "records": sort_popular(safe_records)})
 
@@ -631,6 +624,13 @@ def build_catalog_specs(
                 "records": [dict(record) for record in monthly_packs[month]],
             }
         )
+    specs.append(
+        {
+            "key": "random",
+            "title": "Random Mix",
+            "records": random_records[: max(1, random_count)],
+        }
+    )
     return specs
 
 

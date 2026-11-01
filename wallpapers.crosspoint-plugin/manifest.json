@@ -4,7 +4,7 @@
   "mount": "settings",
   "description": "Browse curated ReadMe.club wallpaper catalogs and download sleep-screen images.",
   "author": "jadehawk",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "files": [
     "manifest.json",
     "device.json",
