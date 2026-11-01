@@ -1,31 +1,31 @@
 {
   "schema": 1,
-  "generator_version": "0.1.4",
-  "generated_at": "2026-11-01T16:08:12.194116+00:00",
+  "generator_version": "0.1.5",
+  "generated_at": "2026-11-01T22:11:13.415978+00:00",
   "source": "https://www.readme.club/wallpapers",
   "partial": false,
   "page_size": 16,
   "random_seed": "2026-11-01",
   "inventory": {
-    "reported_total": 6541,
+    "reported_total": 6544,
     "reported_pages": 205,
     "fetched_pages": 205,
-    "fetched_unique": 6541
+    "fetched_unique": 6544
   },
-  "unique_records_after_device_crawls": 6541,
-  "public_candidates": 6524,
+  "unique_records_after_device_crawls": 6544,
+  "public_candidates": 6527,
   "excluded_sensitive": 17,
   "device_memberships": {
     "devices/x3": {
       "filters": {
         "x3": {
-          "reported_total": 378,
+          "reported_total": 379,
           "reported_pages": 12,
           "fetched_pages": 12,
-          "fetched_unique": 378
+          "fetched_unique": 379
         }
       },
-      "unique": 374
+      "unique": 375
     },
     "devices/x4-family": {
       "filters": {
@@ -82,21 +82,21 @@
     {
       "key": "latest",
       "title": "Latest",
-      "items": 6524,
+      "items": 6527,
       "pages": 408,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/latest/{page}.json"
     },
     {
       "key": "popular",
       "title": "Popular",
-      "items": 6524,
+      "items": 6527,
       "pages": 408,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/popular/{page}.json"
     },
     {
       "key": "devices/x3",
       "title": "X3",
-      "items": 374,
+      "items": 375,
       "pages": 24,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/devices/x3/{page}.json"
     },
@@ -152,7 +152,7 @@
     {
       "key": "categories/minimalist",
       "title": "Category · Minimalist",
-      "items": 362,
+      "items": 363,
       "pages": 23,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/categories/minimalist/{page}.json"
     },
@@ -166,8 +166,8 @@
     {
       "key": "categories/pop_culture",
       "title": "Category · Pop Culture",
-      "items": 1023,
-      "pages": 64,
+      "items": 1025,
+      "pages": 65,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/categories/pop_culture/{page}.json"
     },
     {
