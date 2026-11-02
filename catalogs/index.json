@@ -1,19 +1,19 @@
 {
   "schema": 1,
   "generator_version": "0.1.5",
-  "generated_at": "2026-11-01T22:11:13.415978+00:00",
+  "generated_at": "2026-11-02T06:23:58.846861+00:00",
   "source": "https://www.readme.club/wallpapers",
   "partial": false,
   "page_size": 16,
-  "random_seed": "2026-11-01",
+  "random_seed": "2026-11-02",
   "inventory": {
-    "reported_total": 6544,
+    "reported_total": 6547,
     "reported_pages": 205,
     "fetched_pages": 205,
-    "fetched_unique": 6544
+    "fetched_unique": 6547
   },
-  "unique_records_after_device_crawls": 6544,
-  "public_candidates": 6527,
+  "unique_records_after_device_crawls": 6547,
+  "public_candidates": 6530,
   "excluded_sensitive": 17,
   "device_memberships": {
     "devices/x3": {
@@ -82,15 +82,15 @@
     {
       "key": "latest",
       "title": "Latest",
-      "items": 6527,
-      "pages": 408,
+      "items": 6530,
+      "pages": 409,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/latest/{page}.json"
     },
     {
       "key": "popular",
       "title": "Popular",
-      "items": 6527,
-      "pages": 408,
+      "items": 6530,
+      "pages": 409,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/popular/{page}.json"
     },
     {
@@ -131,7 +131,7 @@
     {
       "key": "categories/custom",
       "title": "Category · Custom",
-      "items": 3673,
+      "items": 3674,
       "pages": 230,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/categories/custom/{page}.json"
     },
@@ -166,15 +166,15 @@
     {
       "key": "categories/pop_culture",
       "title": "Category · Pop Culture",
-      "items": 1025,
+      "items": 1027,
       "pages": 65,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/categories/pop_culture/{page}.json"
     },
     {
       "key": "packs/2026-11",
       "title": "Monthly Pack · 2026-11",
-      "items": 0,
-      "pages": 1,
+      "items": 59,
+      "pages": 4,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/packs/2026-11/{page}.json"
     },
     {
