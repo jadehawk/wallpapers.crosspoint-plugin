@@ -1,19 +1,19 @@
 {
   "schema": 1,
   "generator_version": "0.1.5",
-  "generated_at": "2026-11-14T10:39:54.795916+00:00",
+  "generated_at": "2026-11-14T18:16:48.410996+00:00",
   "source": "https://www.readme.club/wallpapers",
   "partial": false,
   "page_size": 16,
   "random_seed": "2026-11-14",
   "inventory": {
-    "reported_total": 6723,
+    "reported_total": 6725,
     "reported_pages": 211,
     "fetched_pages": 211,
-    "fetched_unique": 6616
+    "fetched_unique": 6617
   },
-  "unique_records_after_device_crawls": 6645,
-  "public_candidates": 6629,
+  "unique_records_after_device_crawls": 6642,
+  "public_candidates": 6626,
   "excluded_sensitive": 16,
   "device_memberships": {
     "devices/x3": {
@@ -30,24 +30,24 @@
     "devices/x4-family": {
       "filters": {
         "x4": {
-          "reported_total": 5380,
+          "reported_total": 5381,
           "reported_pages": 169,
           "fetched_pages": 169,
-          "fetched_unique": 5331
+          "fetched_unique": 5332
         },
         "x4pro": {
-          "reported_total": 5380,
+          "reported_total": 5381,
           "reported_pages": 169,
           "fetched_pages": 169,
-          "fetched_unique": 5331
+          "fetched_unique": 5332
         }
       },
-      "unique": 5324
+      "unique": 5325
     },
     "devices/picco": {
       "filters": {
         "boox-picco": {
-          "reported_total": 5584,
+          "reported_total": 5586,
           "reported_pages": 175,
           "fetched_pages": 175,
           "fetched_unique": 5527
@@ -58,7 +58,7 @@
     "devices/sticky": {
       "filters": {
         "seeedstudio-sticky": {
-          "reported_total": 5584,
+          "reported_total": 5586,
           "reported_pages": 175,
           "fetched_pages": 175,
           "fetched_unique": 5527
@@ -82,14 +82,14 @@
     {
       "key": "latest",
       "title": "Latest",
-      "items": 6629,
+      "items": 6626,
       "pages": 415,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/latest/{page}.json"
     },
     {
       "key": "popular",
       "title": "Popular",
-      "items": 6629,
+      "items": 6626,
       "pages": 415,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/popular/{page}.json"
     },
@@ -103,7 +103,7 @@
     {
       "key": "devices/x4-family",
       "title": "X4 / X4 Pro / X4C",
-      "items": 5324,
+      "items": 5325,
       "pages": 333,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/devices/x4-family/{page}.json"
     },
@@ -131,35 +131,35 @@
     {
       "key": "categories/custom",
       "title": "Category · Custom",
-      "items": 3679,
+      "items": 3675,
       "pages": 230,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/categories/custom/{page}.json"
     },
     {
       "key": "categories/dark",
       "title": "Category · Dark",
-      "items": 355,
+      "items": 354,
       "pages": 23,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/categories/dark/{page}.json"
     },
     {
       "key": "categories/light",
       "title": "Category · Light",
-      "items": 465,
-      "pages": 30,
+      "items": 464,
+      "pages": 29,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/categories/light/{page}.json"
     },
     {
       "key": "categories/minimalist",
       "title": "Category · Minimalist",
-      "items": 376,
+      "items": 377,
       "pages": 24,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/categories/minimalist/{page}.json"
     },
     {
       "key": "categories/other",
       "title": "Category · Other",
-      "items": 381,
+      "items": 382,
       "pages": 24,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/categories/other/{page}.json"
     },
