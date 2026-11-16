@@ -1,19 +1,19 @@
 {
   "schema": 1,
   "generator_version": "0.1.5",
-  "generated_at": "2026-11-15T22:57:59.096842+00:00",
+  "generated_at": "2026-11-16T06:45:32.478163+00:00",
   "source": "https://www.readme.club/wallpapers",
   "partial": false,
   "page_size": 16,
-  "random_seed": "2026-11-15",
+  "random_seed": "2026-11-16",
   "inventory": {
-    "reported_total": 6743,
+    "reported_total": 6745,
     "reported_pages": 211,
     "fetched_pages": 211,
-    "fetched_unique": 6634
+    "fetched_unique": 6638
   },
-  "unique_records_after_device_crawls": 6662,
-  "public_candidates": 6646,
+  "unique_records_after_device_crawls": 6663,
+  "public_candidates": 6647,
   "excluded_sensitive": 16,
   "device_memberships": {
     "devices/x3": {
@@ -82,14 +82,14 @@
     {
       "key": "latest",
       "title": "Latest",
-      "items": 6646,
+      "items": 6647,
       "pages": 416,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/latest/{page}.json"
     },
     {
       "key": "popular",
       "title": "Popular",
-      "items": 6646,
+      "items": 6647,
       "pages": 416,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/popular/{page}.json"
     },
@@ -131,14 +131,14 @@
     {
       "key": "categories/custom",
       "title": "Category · Custom",
-      "items": 3680,
-      "pages": 230,
+      "items": 3681,
+      "pages": 231,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/categories/custom/{page}.json"
     },
     {
       "key": "categories/dark",
       "title": "Category · Dark",
-      "items": 354,
+      "items": 353,
       "pages": 23,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/categories/dark/{page}.json"
     },
@@ -152,14 +152,14 @@
     {
       "key": "categories/minimalist",
       "title": "Category · Minimalist",
-      "items": 387,
+      "items": 388,
       "pages": 25,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/categories/minimalist/{page}.json"
     },
     {
       "key": "categories/other",
       "title": "Category · Other",
-      "items": 382,
+      "items": 383,
       "pages": 24,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/categories/other/{page}.json"
     },
