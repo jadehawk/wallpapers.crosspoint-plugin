@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "generator_version": "0.1.5",
-  "generated_at": "2026-11-22T19:50:44.458194+00:00",
+  "generated_at": "2026-11-23T01:50:39.794471+00:00",
   "source": "https://www.readme.club/wallpapers",
   "partial": false,
   "page_size": 16,
-  "random_seed": "2026-11-22",
+  "random_seed": "2026-11-23",
   "inventory": {
-    "reported_total": 6808,
+    "reported_total": 6810,
     "reported_pages": 213,
     "fetched_pages": 213,
-    "fetched_unique": 6696
+    "fetched_unique": 6695
   },
   "unique_records_after_device_crawls": 6725,
   "public_candidates": 6709,
@@ -47,7 +47,7 @@
     "devices/picco": {
       "filters": {
         "boox-picco": {
-          "reported_total": 5647,
+          "reported_total": 5648,
           "reported_pages": 177,
           "fetched_pages": 177,
           "fetched_unique": 5591
@@ -58,7 +58,7 @@
     "devices/sticky": {
       "filters": {
         "seeedstudio-sticky": {
-          "reported_total": 5647,
+          "reported_total": 5648,
           "reported_pages": 177,
           "fetched_pages": 177,
           "fetched_unique": 5591
@@ -138,7 +138,7 @@
     {
       "key": "categories/dark",
       "title": "Category · Dark",
-      "items": 356,
+      "items": 357,
       "pages": 23,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/categories/dark/{page}.json"
     },
@@ -152,22 +152,22 @@
     {
       "key": "categories/minimalist",
       "title": "Category · Minimalist",
-      "items": 395,
+      "items": 396,
       "pages": 25,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/categories/minimalist/{page}.json"
     },
     {
       "key": "categories/other",
       "title": "Category · Other",
-      "items": 391,
+      "items": 392,
       "pages": 25,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/categories/other/{page}.json"
     },
     {
       "key": "categories/pop_culture",
       "title": "Category · Pop Culture",
-      "items": 1074,
-      "pages": 68,
+      "items": 1072,
+      "pages": 67,
       "url": "https://raw.githubusercontent.com/jadehawk/wallpapers.crosspoint-plugin/main/catalogs/categories/pop_culture/{page}.json"
     },
     {
